@@ -394,8 +394,13 @@ onAuthStateChanged(auth, u => {
     return;
   }
   if(u){
-    // load app config
+    // load app config — clear any previously attached listeners first
+    // to avoid duplicates when onAuthStateChanged fires multiple times
+    // (initial load, token refresh, etc.)
+    clearUnsubs();
     listenAppConfig();
+  } else {
+    clearUnsubs();
   }
   handleRoute();
 });
@@ -1051,13 +1056,14 @@ function openAIDialog(existing, onSaved){
   const save = el('button',{class:'btn btn-primary btn-block', text:'সংরক্ষণ', onclick: async()=>{
     if(!key.value.trim()){ toast('Key দিন','error'); return; }
     const data = { provider: provider.value, model: model.value.trim(), apiKey: key.value.trim(), usage: usage.value, active: active.checked, updatedAt: serverTimestamp() };
-    if(existing) await updateDoc(doc(db,'aiKeys', existing.id), data);
-    else await addDoc(collection(db,'aiKeys'), { ...data, createdAt: serverTimestamp() });
+    let savedId;
+    if(existing){ await updateDoc(doc(db,'aiKeys', existing.id), data); savedId = existing.id; }
+    else { const ref = await addDoc(collection(db,'aiKeys'), { ...data, createdAt: serverTimestamp() }); savedId = ref.id; }
     if(active.checked){
       const all = await getDocs(collection(db,'aiKeys'));
       await Promise.all(all.docs.map(x=>{
         const v = x.data();
-        if(v.usage===data.usage && (existing? x.id!==existing.id : true)) return updateDoc(doc(db,'aiKeys', x.id),{active:false});
+        if(v.usage===data.usage && x.id !== savedId) return updateDoc(doc(db,'aiKeys', x.id),{active:false});
       }));
     }
     toast('সংরক্ষিত','success'); m.close(); onSaved && onSaved();
