@@ -1,0 +1,2223 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#7ec8ff" />
+<meta name="description" content="Bondhu — Student-first chat & social platform with AI-powered well-being analysis." />
+<title>Bondhu • Chat</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css">
+
+<style>
+/* =========================================================
+   Bondhu • Single-file chat / social / admin app
+   Themes: light, dark, sky, mint, sunset, ocean, forest, candy
+   ========================================================= */
+:root{
+  --font-bn: 'Hind Siliguri', 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  --font-en: 'Inter', 'Hind Siliguri', system-ui, sans-serif;
+  --radius: 18px;
+  --radius-sm: 12px;
+  --radius-lg: 26px;
+  --shadow-sm: 0 1px 2px rgba(15,23,42,.04), 0 1px 1px rgba(15,23,42,.03);
+  --shadow:    0 6px 20px rgba(15,23,42,.06), 0 2px 6px rgba(15,23,42,.04);
+  --shadow-lg: 0 20px 50px rgba(15,23,42,.12), 0 6px 16px rgba(15,23,42,.06);
+  --transition: .25s cubic-bezier(.4,.0,.2,1);
+
+  /* Light (default) */
+  --bg:        #f4faff;
+  --bg-2:      #ffffff;
+  --surface:   #ffffff;
+  --surface-2: #f1f7fc;
+  --text:      #0e1a2b;
+  --text-soft: #475569;
+  --text-mute: #8696aa;
+  --border:    #e3edf7;
+  --primary:   #4cc3ff;          /* sky */
+  --primary-2: #2aa9ee;
+  --accent:    #34d399;          /* green */
+  --accent-2:  #10b981;
+  --danger:    #ef4444;
+  --warn:      #f59e0b;
+  --bubble-me: linear-gradient(135deg,#4cc3ff,#34d399);
+  --bubble-them:#ffffff;
+  --gradient-bg: radial-gradient(1200px 600px at 80% -10%, #cfeeff 0%, transparent 60%),
+                 radial-gradient(900px 500px at -10% 110%, #d6f5e4 0%, transparent 60%),
+                 linear-gradient(180deg,#f4faff 0%, #eef7ff 100%);
+}
+
+[data-theme="dark"]{
+  --bg:#0a0f1a; --bg-2:#0f172a; --surface:#111a2c; --surface-2:#0d1626;
+  --text:#e6edf7; --text-soft:#aab7c8; --text-mute:#6f7d92;
+  --border:#1c2740;
+  --primary:#5cc7ff; --primary-2:#2aa9ee; --accent:#34d399; --accent-2:#10b981;
+  --bubble-them:#1a2540;
+  --gradient-bg: radial-gradient(1000px 600px at 80% -10%, #0e2742 0%, transparent 60%),
+                 radial-gradient(800px 500px at -10% 110%, #0e2a23 0%, transparent 60%),
+                 linear-gradient(180deg,#0a0f1a 0%, #0a1326 100%);
+}
+[data-theme="sky"]   { --primary:#4cc3ff; --accent:#22d3ee; --bubble-me:linear-gradient(135deg,#4cc3ff,#22d3ee); }
+[data-theme="mint"]  { --primary:#34d399; --accent:#4cc3ff; --bubble-me:linear-gradient(135deg,#34d399,#4cc3ff); }
+[data-theme="sunset"]{ --primary:#fb923c; --accent:#f43f5e; --bubble-me:linear-gradient(135deg,#fb923c,#f43f5e);
+                       --gradient-bg: radial-gradient(1200px 600px at 80% -10%, #ffd6c2 0%, transparent 60%),
+                                      radial-gradient(900px 500px at -10% 110%, #ffd1e2 0%, transparent 60%),
+                                      linear-gradient(180deg,#fff7f2 0%, #ffeef5 100%); }
+[data-theme="ocean"] { --primary:#3b82f6; --accent:#06b6d4; --bubble-me:linear-gradient(135deg,#3b82f6,#06b6d4); }
+[data-theme="forest"]{ --primary:#16a34a; --accent:#84cc16; --bubble-me:linear-gradient(135deg,#16a34a,#84cc16);
+                       --gradient-bg: radial-gradient(1200px 600px at 80% -10%, #d1fae5 0%, transparent 60%),
+                                      radial-gradient(900px 500px at -10% 110%, #ecfccb 0%, transparent 60%),
+                                      linear-gradient(180deg,#f0fdf4 0%, #ecfccb 100%); }
+[data-theme="candy"] { --primary:#ec4899; --accent:#a855f7; --bubble-me:linear-gradient(135deg,#ec4899,#a855f7);
+                       --gradient-bg: radial-gradient(1200px 600px at 80% -10%, #fce7f3 0%, transparent 60%),
+                                      radial-gradient(900px 500px at -10% 110%, #ede9fe 0%, transparent 60%),
+                                      linear-gradient(180deg,#fff7fb 0%, #f5f0ff 100%); }
+
+*,*::before,*::after{ box-sizing:border-box; }
+html,body{ margin:0; padding:0; height:100%; overflow:hidden; }
+body{
+  font-family: var(--font-bn);
+  color: var(--text);
+  background: var(--bg);
+  background-image: var(--gradient-bg);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  -webkit-tap-highlight-color: transparent;
+}
+button,input,textarea,select{ font: inherit; color:inherit; }
+button{ cursor:pointer; border:0; background:transparent; }
+a{ color: var(--primary-2); text-decoration:none; }
+img{ max-width:100%; display:block; }
+::-webkit-scrollbar{ width:8px; height:8px; }
+::-webkit-scrollbar-thumb{ background: var(--border); border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover{ background: var(--text-mute); }
+
+/* Utility */
+.hidden{ display:none !important; }
+.row{ display:flex; align-items:center; }
+.col{ display:flex; flex-direction:column; }
+.gap-1{gap:4px}.gap-2{gap:8px}.gap-3{gap:12px}.gap-4{gap:16px}.gap-5{gap:20px}.gap-6{gap:24px}
+.grow{flex:1; min-width:0; min-height:0;}
+.center{align-items:center; justify-content:center;}
+.between{justify-content:space-between;}
+.muted{ color: var(--text-mute); }
+.soft{ color: var(--text-soft); }
+.small{ font-size: 12px; }
+.tiny{ font-size: 11px; }
+.bold{ font-weight: 700; }
+.semibold{ font-weight: 600; }
+.truncate{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+/* Buttons */
+.btn{
+  display:inline-flex; align-items:center; gap:8px; justify-content:center;
+  padding:10px 16px; border-radius: 12px; background: var(--surface-2);
+  color: var(--text); font-weight:600; font-size:14px;
+  transition: var(--transition);
+  border:1px solid var(--border);
+}
+.btn:hover{ transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+.btn-primary{
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color:#fff; border:0;
+  box-shadow: 0 8px 20px -8px var(--primary);
+}
+.btn-primary:hover{ filter: brightness(1.05); box-shadow: 0 14px 28px -10px var(--primary); }
+.btn-ghost{ background: transparent; border-color: transparent; }
+.btn-ghost:hover{ background: var(--surface-2); }
+.btn-danger{ background:#fee2e2; color:#b91c1c; border-color:#fecaca; }
+[data-theme="dark"] .btn-danger{ background:#3b1414; color:#fecaca; border-color:#5a1d1d; }
+.btn-block{ width:100%; }
+.btn-icon{ width:40px; height:40px; padding:0; border-radius:50%; }
+.btn-sm{ padding:6px 10px; font-size:12px; border-radius:10px; }
+.btn:disabled{ opacity:.5; cursor:not-allowed; transform:none; }
+
+/* Inputs */
+.field{ display:flex; flex-direction:column; gap:6px; }
+.field > label{ font-size:12px; color: var(--text-soft); font-weight:600; }
+.input, .textarea, .select{
+  width:100%;
+  padding: 12px 14px;
+  border:1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--text);
+  outline: none;
+  transition: var(--transition);
+}
+.input:focus, .textarea:focus, .select:focus{
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 20%, transparent);
+}
+.textarea{ min-height: 80px; resize: vertical; }
+.input-group{ position:relative; }
+.input-group .input{ padding-right: 44px; }
+.input-group .ig-btn{
+  position:absolute; right:6px; top:50%; transform:translateY(-50%);
+  width:36px; height:36px; border-radius: 10px;
+}
+
+/* App Shell */
+#app{
+  width: 100vw; height: 100vh; display:flex; flex-direction:column;
+}
+
+/* Auth screen */
+.auth-wrap{
+  width:100vw; height:100vh; display:flex; align-items:center; justify-content:center;
+  padding:16px; overflow:auto;
+}
+.auth-card{
+  width:100%; max-width: 460px;
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  border:1px solid var(--border);
+  box-shadow: var(--shadow-lg);
+  padding: 28px;
+}
+.auth-logo{
+  width:64px; height:64px; border-radius:20px;
+  background: linear-gradient(135deg,var(--primary),var(--accent));
+  display:flex; align-items:center; justify-content:center; color:#fff; font-size:30px;
+  margin: 0 auto 12px;
+  box-shadow: 0 16px 30px -10px var(--primary);
+}
+.auth-title{ text-align:center; font-size:22px; font-weight:800; margin: 4px 0 4px; }
+.auth-sub{ text-align:center; color:var(--text-soft); margin-bottom:20px; font-size:13px;}
+.auth-grid{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
+.auth-grid > .field.full{ grid-column: 1 / -1; }
+.auth-foot{ text-align:center; margin-top: 14px; color: var(--text-soft); font-size: 13px; }
+
+/* Toast */
+#toasts{
+  position: fixed; right: 16px; bottom: 16px; z-index: 9999;
+  display:flex; flex-direction: column; gap:8px;
+}
+.toast{
+  background: var(--surface); border:1px solid var(--border);
+  padding:10px 14px; border-radius: 12px; box-shadow: var(--shadow-lg);
+  display:flex; align-items:center; gap:10px; min-width: 220px;
+  animation: slideIn .3s ease;
+}
+.toast.success{ border-color: var(--accent); }
+.toast.error{ border-color: var(--danger); }
+.toast.info{ border-color: var(--primary); }
+@keyframes slideIn{ from{ transform: translateX(20px); opacity:0; } to{ transform:none; opacity:1; } }
+
+/* Modal */
+.modal-back{
+  position: fixed; inset: 0; background: rgba(15,23,42,.45);
+  display:flex; align-items:center; justify-content:center; z-index: 9000;
+  padding: 16px;
+  animation: fadeIn .2s;
+}
+@keyframes fadeIn{ from{opacity:0} to{opacity:1} }
+.modal{
+  background: var(--surface); border:1px solid var(--border);
+  border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);
+  width: 100%; max-width: 480px; max-height: 92vh; overflow:auto;
+}
+.modal-header{ padding:16px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+.modal-body{ padding:20px; display:flex; flex-direction:column; gap:14px; }
+.modal-foot{ padding: 14px 20px; border-top:1px solid var(--border); display:flex; gap:8px; justify-content:flex-end; }
+
+/* Spinner */
+.spinner{
+  width:18px; height:18px; border:2px solid var(--border);
+  border-top-color: var(--primary); border-radius:50%;
+  animation: spin 1s linear infinite; display:inline-block;
+}
+.spinner.lg{ width:36px; height:36px; border-width:3px; }
+@keyframes spin{ to{ transform: rotate(360deg); } }
+
+/* ============ Main App Layout ============ */
+.app-shell{
+  width:100%; height:100%; display:grid;
+  grid-template-rows: auto 1fr; overflow:hidden;
+}
+.topbar{
+  display:flex; align-items:center; gap:10px; padding: 10px 14px;
+  background: var(--surface); border-bottom:1px solid var(--border);
+  position: sticky; top:0; z-index: 50;
+}
+.brand{
+  display:flex; align-items:center; gap:10px; font-weight:800; font-size:18px;
+}
+.brand-mark{
+  width:34px; height:34px; border-radius:10px;
+  background: linear-gradient(135deg,var(--primary),var(--accent));
+  color:#fff; display:flex; align-items:center; justify-content:center;
+  font-weight:800;
+  box-shadow: 0 8px 16px -6px var(--primary);
+}
+.search{
+  position:relative; flex:1; max-width: 460px;
+}
+.search input{
+  width:100%; padding: 10px 14px 10px 40px; border-radius: 999px;
+  background: var(--surface-2); border:1px solid var(--border); color: var(--text); outline:none;
+}
+.search i{ position:absolute; left:14px; top:50%; transform:translateY(-50%); color: var(--text-mute); }
+
+.app-body{
+  display:grid; grid-template-columns: 320px 1fr 320px;
+  height: 100%; overflow:hidden;
+}
+.app-body > .panel{ overflow:hidden; display:flex; flex-direction:column; min-width:0; min-height:0; }
+.app-body > .panel-left{  background: var(--surface); border-right:1px solid var(--border); }
+.app-body > .panel-mid{   background: transparent; }
+.app-body > .panel-right{ background: var(--surface); border-left:1px solid var(--border); }
+
+@media (max-width: 1100px){
+  .app-body{ grid-template-columns: 280px 1fr; }
+  .panel-right{ display:none; }
+}
+@media (max-width: 720px){
+  .app-body{ grid-template-columns: 1fr; }
+  .panel-left{ display:none; }
+  .app-body.show-left .panel-left{ display:flex; position:absolute; inset:0; z-index:40; }
+  .app-body.show-right .panel-right{ display:flex; position:absolute; inset:0; z-index:40; }
+}
+
+/* Stories rail (top of mid panel) */
+.stories-rail{
+  display:flex; gap:10px; padding: 10px 12px;
+  background: var(--surface); border-bottom:1px solid var(--border);
+  overflow-x:auto; scrollbar-width: none;
+}
+.stories-rail::-webkit-scrollbar{ display:none; }
+.story-cell{
+  flex: 0 0 76px; display:flex; flex-direction:column; align-items:center; gap:6px;
+  cursor:pointer;
+}
+.story-ring{
+  width:64px; height:64px; border-radius:50%;
+  padding: 3px;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  position:relative;
+}
+.story-ring.seen{ background: var(--border); }
+.story-ring img, .story-ring .avatar-fb{
+  width:100%; height:100%; border-radius:50%; object-fit:cover; background:#cdd; border: 2px solid var(--surface);
+}
+.story-cell .name{ font-size: 11px; max-width:74px; }
+.story-cell.add .story-ring{ background: var(--surface-2); border:1.5px dashed var(--border); display:flex; align-items:center; justify-content:center; color: var(--primary); }
+.story-cell.add .story-ring i{ font-size: 24px; }
+
+/* Left Panel: chats */
+.tabs{
+  display:flex; gap:2px; padding: 8px; border-bottom:1px solid var(--border);
+  background: var(--surface);
+}
+.tab{
+  flex:1; padding: 8px 6px; text-align:center; border-radius: 10px;
+  font-weight:600; color: var(--text-soft); font-size: 13px; cursor:pointer;
+}
+.tab.active{ background: var(--surface-2); color: var(--text); }
+.list{ overflow-y:auto; flex:1; }
+.list-item{
+  display:flex; align-items:center; gap:12px; padding: 10px 12px;
+  cursor:pointer; border-bottom:1px solid var(--border);
+  transition: background var(--transition);
+}
+.list-item:hover{ background: var(--surface-2); }
+.list-item.active{ background: var(--surface-2); }
+.avatar{
+  width:46px; height:46px; border-radius:50%; background: var(--surface-2);
+  display:flex; align-items:center; justify-content:center; font-weight:700;
+  color: var(--primary-2); flex-shrink:0; overflow:hidden; position:relative;
+  border:1px solid var(--border);
+}
+.avatar img{ width:100%; height:100%; object-fit:cover; }
+.avatar.sm{ width:32px; height:32px; font-size:13px; }
+.avatar.lg{ width:96px; height:96px; font-size:34px; }
+.online-dot{
+  position:absolute; right:0; bottom:0; width:12px; height:12px;
+  border-radius:50%; background: var(--accent); border:2px solid var(--surface);
+}
+.list-item .meta{ flex:1; min-width:0; }
+.list-item .meta .top{ display:flex; justify-content:space-between; gap:8px; }
+.list-item .meta .name{ font-weight:600; }
+.list-item .meta .time{ font-size:11px; color:var(--text-mute); }
+.list-item .meta .last{ font-size:13px; color: var(--text-mute); }
+.unread-badge{
+  background: var(--primary); color:#fff; border-radius:999px; padding: 2px 7px;
+  font-size: 11px; font-weight:700;
+}
+
+/* Mid Panel: chat / feed */
+.chat-header{
+  display:flex; align-items:center; gap:10px; padding: 10px 14px;
+  background: var(--surface); border-bottom:1px solid var(--border);
+}
+.chat-header .name{ font-weight:700; }
+.chat-header .status{ font-size:12px; color: var(--text-mute); }
+.chat-msgs{ flex:1; overflow-y:auto; padding: 18px; display:flex; flex-direction:column; gap:6px; }
+.bubble-row{ display:flex; gap:8px; align-items:flex-end; }
+.bubble-row.me{ flex-direction: row-reverse; }
+.bubble{
+  max-width: 70%; padding: 10px 14px; border-radius: 18px;
+  background: var(--bubble-them); border:1px solid var(--border);
+  word-wrap: break-word; word-break: break-word; white-space: pre-wrap;
+  position:relative;
+  box-shadow: var(--shadow-sm);
+}
+.bubble-row.me .bubble{
+  background: var(--bubble-me); color:#fff; border:0;
+}
+.bubble.media{ padding: 4px; overflow:hidden; }
+.bubble.media img, .bubble.media video{ max-width: 320px; max-height: 320px; border-radius: 14px; display:block; }
+.bubble .ts{ font-size: 10px; opacity: .7; margin-top: 2px; display:block; }
+.bubble-row.me .bubble .ts{ text-align:right; }
+.bubble.voice{ display:flex; align-items:center; gap:8px; }
+.bubble.voice audio{ height:32px; }
+.day-divider{ text-align:center; color: var(--text-mute); font-size:11px; padding: 8px 0; }
+
+.chat-composer{
+  border-top:1px solid var(--border); background: var(--surface);
+  padding: 8px 10px; display:flex; gap:8px; align-items:flex-end;
+}
+.chat-composer .compose-input{
+  flex:1; min-height: 42px; max-height: 140px; overflow:auto;
+  padding: 10px 14px; border-radius: 18px; background: var(--surface-2);
+  border:1px solid var(--border); outline:none;
+}
+.chat-composer .compose-input:focus{ border-color: var(--primary); }
+.composer-actions{ display:flex; gap:4px; }
+
+/* Empty state for mid */
+.empty{
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  height:100%; color: var(--text-soft); padding: 24px; text-align:center;
+}
+.empty i{ font-size: 56px; color: var(--primary); opacity:.7; margin-bottom: 8px; }
+
+/* Right Panel: profile / feed selector */
+.right-tabs{ display:flex; padding:8px; gap:4px; border-bottom: 1px solid var(--border); background: var(--surface); }
+.right-tabs .tab{ font-size:12px; }
+.right-content{ flex:1; overflow-y:auto; padding: 14px; }
+
+.profile-card{ display:flex; flex-direction:column; align-items:center; gap:10px; padding: 16px; }
+.profile-card .name{ font-weight:800; font-size: 18px; }
+.profile-card .username{ color: var(--text-mute); font-size: 13px; }
+.kv{
+  display:grid; grid-template-columns: 110px 1fr; gap: 8px 12px;
+  padding: 8px 0; font-size: 13px;
+}
+.kv .k{ color: var(--text-soft); }
+
+/* Feed */
+.feed{ display:flex; flex-direction: column; gap: 14px; padding: 14px; max-width: 700px; margin: 0 auto; }
+.post{
+  background: var(--surface); border:1px solid var(--border); border-radius: var(--radius-lg);
+  overflow:hidden;
+  box-shadow: var(--shadow-sm);
+}
+.post-head{ display:flex; align-items:center; gap:10px; padding: 12px; }
+.post-img img{ width:100%; max-height: 600px; object-fit: cover; background: var(--surface-2); }
+.post-actions{ display:flex; gap:4px; padding: 8px 8px 0; }
+.post-caption{ padding: 6px 12px 12px; font-size: 14px; }
+.post-caption .author{ font-weight:700; margin-right: 6px; }
+
+/* Floating compose post */
+.fab{
+  position: fixed; right: 24px; bottom: 24px;
+  width: 56px; height:56px; border-radius:50%;
+  background: linear-gradient(135deg,var(--primary),var(--accent));
+  color:#fff; display:flex; align-items:center; justify-content:center;
+  box-shadow: 0 16px 30px -10px var(--primary);
+  z-index: 60; font-size:22px; cursor:pointer;
+  transition: var(--transition);
+}
+.fab:hover{ transform: translateY(-2px); }
+@media (max-width:720px){ .fab{ bottom: 80px; } }
+
+/* Mobile bottom nav */
+.mobile-nav{
+  display:none; position: sticky; bottom:0; left:0; right:0;
+  background: var(--surface); border-top:1px solid var(--border);
+  z-index: 40;
+  padding: 6px 4px;
+}
+.mobile-nav .nav-btn{
+  flex:1; display:flex; flex-direction:column; align-items:center; gap:2px;
+  font-size: 11px; color: var(--text-mute); padding: 6px;
+}
+.mobile-nav .nav-btn.active{ color: var(--primary); }
+.mobile-nav .nav-btn i{ font-size: 20px; }
+@media (max-width:720px){
+  .mobile-nav{ display:flex; }
+  .app-shell{ grid-template-rows: auto 1fr auto; }
+}
+
+/* Story viewer */
+.story-viewer{
+  position: fixed; inset:0; background:#000; z-index: 9500;
+  display:flex; align-items:center; justify-content:center;
+}
+.story-viewer .content{
+  width:100%; max-width: 460px; height: 100%; max-height: 880px;
+  background: #111; position:relative; overflow:hidden; border-radius: 0;
+}
+.story-viewer .progress{ position:absolute; top:8px; left:8px; right:8px; height:3px; display:flex; gap:4px; z-index:5; }
+.story-viewer .progress .bar{ flex:1; background: rgba(255,255,255,.3); border-radius:3px; overflow:hidden; }
+.story-viewer .progress .bar > i{ display:block; height:100%; width:0%; background:#fff; }
+.story-viewer .head{ position:absolute; top:18px; left:14px; right:14px; display:flex; align-items:center; gap:10px; color:#fff; z-index: 5; }
+.story-viewer .head .x{ margin-left:auto; color:#fff; font-size:22px; }
+.story-viewer .text{ width:100%; height:100%; display:flex; align-items:center; justify-content:center; padding: 20px; text-align:center; color:#fff; font-size: 22px; font-weight:700; }
+.story-viewer .text.has-bg{ background: linear-gradient(135deg,var(--primary),var(--accent)); }
+.story-viewer img{ width:100%; height:100%; object-fit:cover; }
+
+/* Focus mode overlay */
+.focus-overlay{
+  position: fixed; inset:0; z-index: 9800; background: rgba(15,23,42,.96);
+  display:flex; align-items:center; justify-content:center; padding: 16px; color:#fff;
+}
+.focus-card{
+  background: rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.16);
+  backdrop-filter: blur(12px);
+  padding: 28px; border-radius: 24px; max-width: 480px; width: 100%; text-align:center;
+}
+.focus-timer{ font-size: 56px; font-weight: 800; color: #fff; letter-spacing: 2px; }
+
+/* Admin */
+.admin-shell{ display:grid; grid-template-columns: 240px 1fr; height:100%; }
+.admin-side{ background: var(--surface); border-right:1px solid var(--border); padding: 12px; display:flex; flex-direction: column; gap:4px; overflow-y:auto; }
+.admin-nav-btn{ text-align:left; padding: 10px 12px; border-radius: 10px; color: var(--text-soft); font-weight:600; display:flex; align-items:center; gap:8px; }
+.admin-nav-btn:hover{ background: var(--surface-2); }
+.admin-nav-btn.active{ background: var(--surface-2); color: var(--text); }
+.admin-main{ padding: 16px 22px; overflow:auto; }
+.admin-card{ background: var(--surface); border:1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 14px; }
+.admin-stats{ display:grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: 12px; margin-bottom: 14px; }
+.stat{ background: var(--surface); border:1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+.stat .v{ font-size: 24px; font-weight: 800; }
+.stat .l{ font-size: 12px; color: var(--text-mute); }
+@media (max-width: 720px){
+  .admin-shell{ grid-template-columns: 1fr; }
+  .admin-side{ display:none; }
+  .admin-shell.show-side .admin-side{ display:flex; position:absolute; inset: 0; z-index: 40; width: 80%; }
+}
+
+/* Theme picker swatches */
+.theme-grid{ display:grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.theme-swatch{
+  height: 48px; border-radius: 12px; border:2px solid var(--border); cursor:pointer;
+  position: relative; overflow:hidden;
+}
+.theme-swatch.active{ border-color: var(--primary); box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 25%, transparent); }
+.theme-swatch .lbl{ position:absolute; left:6px; bottom:4px; font-size:10px; color:#fff; text-shadow: 0 1px 2px rgba(0,0,0,.5); }
+
+/* Emoji picker */
+.emoji-pop{
+  position:absolute; bottom: 56px; right: 12px; background: var(--surface);
+  border:1px solid var(--border); border-radius: 16px; padding: 8px;
+  box-shadow: var(--shadow-lg);
+  display: grid; grid-template-columns: repeat(8, 28px); gap: 2px;
+  max-height: 240px; overflow-y: auto; z-index: 80;
+}
+.emoji-pop button{ width:28px; height:28px; font-size: 18px; line-height:1; border-radius:6px; }
+.emoji-pop button:hover{ background: var(--surface-2); }
+
+/* AI panel small */
+.ai-panel{
+  background: linear-gradient(135deg, color-mix(in srgb, var(--primary) 12%, var(--surface)),
+                                       color-mix(in srgb, var(--accent) 12%, var(--surface)));
+  border:1px solid var(--border);
+  border-radius: var(--radius); padding: 14px;
+}
+
+/* Risk badges */
+.risk{ display:inline-flex; align-items:center; gap:4px; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight:700; }
+.risk.low   { background:#dcfce7; color:#166534; }
+.risk.med   { background:#fef3c7; color:#854d0e; }
+.risk.high  { background:#fee2e2; color:#991b1b; }
+.risk.crit  { background:#1f2937; color:#fff; }
+[data-theme="dark"] .risk.low  { background:#0f3a23; color:#86efac;}
+[data-theme="dark"] .risk.med  { background:#3b2710; color:#fcd34d;}
+[data-theme="dark"] .risk.high { background:#3b1414; color:#fecaca;}
+
+/* Tables */
+.tbl{ width:100%; border-collapse: collapse; font-size: 13px; }
+.tbl th, .tbl td{ text-align:left; padding: 10px 8px; border-bottom: 1px solid var(--border); }
+.tbl th{ color: var(--text-soft); font-weight:600; font-size:12px; }
+.tbl tr:hover td{ background: var(--surface-2); }
+
+/* Locked screen for failed quiz */
+.lock-screen{ position:fixed; inset:0; z-index: 9700; background: rgba(0,0,0,.85); display:flex; align-items:center; justify-content:center; color:#fff; padding: 16px; }
+.lock-card{ background: rgba(255,255,255,.06); padding: 28px; border-radius: 20px; max-width: 420px; text-align:center; }
+
+/* Helper: hide scrollbar in stories rail */
+
+/* Animations */
+.fade-in{ animation: fadeIn .25s ease; }
+
+/* Print */
+@media print{ body{ background: #fff !important; } }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <div class="auth-wrap center">
+    <div class="spinner lg"></div>
+  </div>
+</div>
+
+<div id="modal-root"></div>
+<div id="toasts"></div>
+
+<!-- =========================================================
+     Firebase + App logic (ES module)
+     ========================================================= -->
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import {
+  getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+  onAuthStateChanged, signOut, updateProfile
+} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+import {
+  getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc,
+  collection, query, where, orderBy, limit, onSnapshot, addDoc,
+  serverTimestamp, getDocs, arrayUnion, arrayRemove, runTransaction,
+  Timestamp
+} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+import {
+  getStorage, ref as sref, uploadBytes, getDownloadURL, deleteObject
+} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js";
+import {
+  getDatabase, ref as rref, onValue, set as rset, onDisconnect, serverTimestamp as rts
+} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
+
+/* ====== Firebase config ====== */
+const firebaseConfig = {
+  apiKey: "AIzaSyDOjmJqU4YuahJLFmlZ5yEhjCctvq_ToCw",
+  authDomain: "thetakingchatsosal.firebaseapp.com",
+  projectId: "thetakingchatsosal",
+  storageBucket: "thetakingchatsosal.firebasestorage.app",
+  messagingSenderId: "1091952874901",
+  appId: "1:1091952874901:web:acd7cbf3fa44cb0045529c",
+  measurementId: "G-F71XY6M8Q9",
+  databaseURL: "https://thetakingchatsosal-default-rtdb.firebaseio.com"
+};
+
+/* ====== Hard-coded admin email (you can change here) ====== */
+const ADMIN_EMAIL = "nafizofe8@gmail.com";
+
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+const stg  = getStorage(app);
+const rtdb = getDatabase(app);
+
+/* ====== Tiny utilities ====== */
+const $  = (sel, root=document) => root.querySelector(sel);
+const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+const el = (tag, props={}, ...children) => {
+  const e = document.createElement(tag);
+  for(const [k,v] of Object.entries(props||{})){
+    if(k==='class') e.className = v;
+    else if(k==='style' && typeof v==='object') Object.assign(e.style,v);
+    else if(k.startsWith('on') && typeof v==='function') e.addEventListener(k.slice(2).toLowerCase(),v);
+    else if(k==='html') e.innerHTML = v;
+    else if(k==='text') e.textContent = v;
+    else if(v===true) e.setAttribute(k,'');
+    else if(v!==false && v!==null && v!==undefined) e.setAttribute(k, v);
+  }
+  for(const c of children.flat()){
+    if(c==null||c===false) continue;
+    e.appendChild(typeof c==='string' ? document.createTextNode(c) : c);
+  }
+  return e;
+};
+const escapeHtml = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmtTime = t => {
+  if(!t) return '';
+  const d = t.toDate ? t.toDate() : new Date(t);
+  const today = new Date();
+  const sameDay = d.toDateString() === today.toDateString();
+  if(sameDay) return d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+  const diff = (today - d) / (1000*60*60*24);
+  if(diff < 7) return d.toLocaleDateString([], {weekday:'short'});
+  return d.toLocaleDateString();
+};
+const dayKey = t => {
+  const d = t?.toDate ? t.toDate() : new Date(t || Date.now());
+  return d.toDateString();
+};
+const initials = (name='') => name.trim().split(/\s+/).map(p=>p[0]).slice(0,2).join('').toUpperCase() || '?';
+
+/* ====== Toast ====== */
+function toast(msg, type='info', ms=2800){
+  const t = el('div',{class:`toast ${type}`}, el('i',{class: type==='success'?'ri-checkbox-circle-fill':type==='error'?'ri-error-warning-fill':'ri-information-fill'}), el('span',{text: msg}));
+  $('#toasts').appendChild(t);
+  setTimeout(()=>{ t.style.opacity='0'; t.style.transform='translateX(20px)'; setTimeout(()=>t.remove(),250); }, ms);
+}
+
+/* ====== Modal ====== */
+function modal({title, body, foot, onClose}){
+  const root = $('#modal-root');
+  const back = el('div',{class:'modal-back', onclick:(e)=>{ if(e.target===back){ close(); } }});
+  const m = el('div',{class:'modal'});
+  const h = el('div',{class:'modal-header'},
+    el('div',{class:'bold', text: title || ''}),
+    el('button',{class:'btn btn-ghost btn-icon', onclick:close}, el('i',{class:'ri-close-line'}))
+  );
+  const b = el('div',{class:'modal-body'});
+  if(typeof body==='string') b.innerHTML = body;
+  else if(body) b.appendChild(body);
+  const f = el('div',{class:'modal-foot'});
+  if(foot) (Array.isArray(foot)?foot:[foot]).forEach(x=>f.appendChild(x));
+  m.appendChild(h); m.appendChild(b); if(foot) m.appendChild(f);
+  back.appendChild(m); root.appendChild(back);
+  function close(){ back.remove(); onClose && onClose(); }
+  return { close, body: b };
+}
+function confirmDialog(message, okLabel='ঠিক আছে'){
+  return new Promise(res=>{
+    const m = modal({
+      title:'নিশ্চিত করুন',
+      body: el('div',{text: message}),
+      foot: [
+        el('button',{class:'btn', onclick:()=>{ m.close(); res(false); }, text:'বাতিল'}),
+        el('button',{class:'btn btn-primary', onclick:()=>{ m.close(); res(true); }, text: okLabel})
+      ]
+    });
+  });
+}
+
+/* ====== State ====== */
+const state = {
+  user: null,           // firebase auth user
+  profile: null,        // user profile from firestore
+  unsub: [],            // active unsubscribers (per route)
+  globalUnsub: [],      // unsubscribe across whole session
+  appConfig: { name:'Bondhu', logoEmoji:'💬' },
+  focus: null,
+  focusActive: false,
+  theme: localStorage.getItem('theme') || 'light',
+  currentChatId: null,
+  currentChatPeer: null,
+  currentGroupId: null,
+  blockedUids: [],
+  view: 'chats',        // chats | groups
+};
+
+/* ====== Theme ====== */
+function applyTheme(t){
+  state.theme = t;
+  document.documentElement.dataset.theme = t;
+  localStorage.setItem('theme', t);
+}
+applyTheme(state.theme);
+
+/* ====== Routing (hash-based) ====== */
+function navigate(hash){ if(location.hash !== hash) location.hash = hash; else handleRoute(); }
+function parseRoute(){
+  const h = location.hash.replace(/^#/,'') || '/';
+  const [path, ...rest] = h.split('/').filter(Boolean);
+  return { name: path || 'home', args: rest };
+}
+function clearUnsubs(){ state.unsub.forEach(u => { try{ u(); }catch{} }); state.unsub = []; }
+async function handleRoute(){
+  const r = parseRoute();
+  if(!state.user){
+    if(r.name==='register') return renderRegister();
+    return renderLogin();
+  }
+  if(!state.profile){
+    return renderProfileSetup();
+  }
+  clearUnsubs();
+  switch(r.name){
+    case 'home': case '': case '/': return renderHome();
+    case 'chat': return renderChat(r.args[0]);
+    case 'group': return renderGroup(r.args[0]);
+    case 'feed': return renderFeed();
+    case 'settings': return renderSettings();
+    case 'profile': return renderProfileView(r.args[0]);
+    case 'admin':
+      if(state.user.email !== ADMIN_EMAIL) { toast('শুধুমাত্র এডমিন প্রবেশ করতে পারবে','error'); return navigate('#home'); }
+      // Admin panel lives in a separate file (admin.html) for security.
+      location.replace('admin.html');
+      return;
+    default: return renderHome();
+  }
+}
+window.addEventListener('hashchange', handleRoute);
+
+/* ====== Auth state ====== */
+onAuthStateChanged(auth, async (u)=>{
+  // unsub previous globals
+  state.globalUnsub.forEach(x=>{try{x();}catch{}}); state.globalUnsub = [];
+  state.user = u;
+  state.profile = null;
+  if(u){
+    // load profile, attach presence + global listeners
+    try{
+      const snap = await getDoc(doc(db,'users',u.uid));
+      if(snap.exists()){
+        state.profile = snap.data();
+        if(state.profile.theme){ applyTheme(state.profile.theme); }
+      }
+    }catch(e){ console.error(e); }
+    setupPresence(u.uid);
+    listenAppConfig();
+    listenFocusMode();
+    if(state.profile){
+      // listen to user doc changes (block list, theme, etc)
+      const un = onSnapshot(doc(db,'users',u.uid), (s)=>{
+        if(s.exists()){
+          state.profile = s.data();
+          state.blockedUids = state.profile.blocked || [];
+          if(state.profile.theme && state.profile.theme !== state.theme) applyTheme(state.profile.theme);
+        }
+      });
+      state.globalUnsub.push(un);
+    }
+  }
+  handleRoute();
+});
+
+/* ====== Presence ====== */
+function setupPresence(uid){
+  const r = rref(rtdb, `presence/${uid}`);
+  rset(r, { online: true, lastSeen: rts() }).catch(()=>{});
+  onDisconnect(r).set({ online: false, lastSeen: rts() }).catch(()=>{});
+  window.addEventListener('beforeunload', ()=>{
+    rset(r, { online: false, lastSeen: Date.now() }).catch(()=>{});
+  });
+}
+
+/* ====== App config + focus listener ====== */
+function listenAppConfig(){
+  const un = onSnapshot(doc(db,'config','app'), (s)=>{
+    if(s.exists()){
+      Object.assign(state.appConfig, s.data());
+      document.title = (state.appConfig.name||'Bondhu') + ' • Chat';
+      $$('.brand-name').forEach(n => n.textContent = state.appConfig.name || 'Bondhu');
+      $$('.brand-emoji').forEach(n => n.textContent = state.appConfig.logoEmoji || '💬');
+    }
+  });
+  state.globalUnsub.push(un);
+}
+function listenFocusMode(){
+  const un = onSnapshot(doc(db,'config','focus'), (s)=>{
+    if(!s.exists()){ state.focus = null; state.focusActive = false; updateFocusUI(); return; }
+    state.focus = s.data();
+    const now = Date.now();
+    const start = state.focus.startAt?.toDate ? state.focus.startAt.toDate().getTime() : Number(state.focus.startAt||0);
+    const end   = state.focus.endAt?.toDate ? state.focus.endAt.toDate().getTime() : Number(state.focus.endAt||0);
+    state.focusActive = state.focus.active && start <= now && now <= end;
+    updateFocusUI();
+  });
+  state.globalUnsub.push(un);
+}
+
+/* When focus mode active or user pending quiz */
+function updateFocusUI(){
+  // If user is admin, never lock
+  if(state.user?.email === ADMIN_EMAIL){ removeFocusOverlay(); return; }
+  if(state.focusActive){ showFocusOverlay(); return; }
+  removeFocusOverlay();
+  // After focus end, if user has pendingQuiz flag, prompt
+  if(state.profile?.pendingQuiz){
+    showQuizGate();
+  }
+}
+
+/* ============================================================
+   AUTH SCREENS
+   ============================================================ */
+function renderLogin(){
+  const root = $('#app');
+  root.innerHTML = '';
+  const wrap = el('div',{class:'auth-wrap'});
+  const card = el('div',{class:'auth-card'});
+  const logo = el('div',{class:'auth-logo'}, el('span',{class:'brand-emoji', text:'💬'}));
+  const title= el('div',{class:'auth-title brand-name', text:'Bondhu'});
+  const sub  = el('div',{class:'auth-sub', text:'লগইন করুন'});
+  const errBox = el('div',{class:'small', style:{color:'var(--danger)', minHeight:'18px'}});
+  const grid = el('div',{class:'auth-grid'});
+  const fEmail = field('ইমেইল','email','email','you@example.com');
+  const fPass  = passwordField('পাসওয়ার্ড','password');
+  fEmail.classList.add('full'); fPass.classList.add('full');
+  grid.append(fEmail, fPass);
+  const submit = el('button',{class:'btn btn-primary btn-block', text:'লগইন'});
+  const foot = el('div',{class:'auth-foot'},
+    el('span',{text:'অ্যাকাউন্ট নেই? '}),
+    el('a',{href:'#register', text:'রেজিস্টার করুন'})
+  );
+  submit.addEventListener('click', async ()=>{
+    errBox.textContent = '';
+    submit.disabled = true; submit.innerHTML = '<span class="spinner"></span>';
+    try{
+      const email = $('input[name=email]', card).value.trim();
+      const pass  = $('input[name=password]', card).value;
+      await signInWithEmailAndPassword(auth, email, pass);
+      toast('স্বাগতম!', 'success');
+    }catch(e){
+      errBox.textContent = friendlyAuth(e);
+    }finally{
+      submit.disabled = false; submit.textContent = 'লগইন';
+    }
+  });
+  card.append(logo, title, sub, errBox, grid, el('div',{style:{height:'12px'}}), submit, foot);
+  wrap.appendChild(card); root.appendChild(wrap);
+}
+function friendlyAuth(e){
+  const c = e?.code || '';
+  if(c.includes('invalid-credential') || c.includes('wrong-password') || c.includes('user-not-found'))
+    return 'ইমেইল বা পাসওয়ার্ড ভুল';
+  if(c.includes('email-already')) return 'এই ইমেইল আগে থেকেই ব্যবহৃত';
+  if(c.includes('weak-password')) return 'পাসওয়ার্ড অন্তত ৬ অক্ষরের হতে হবে';
+  if(c.includes('invalid-email')) return 'ইমেইল ফরম্যাট ঠিক নয়';
+  return e?.message || 'কিছু একটা সমস্যা হয়েছে';
+}
+function field(label, name, type='text', placeholder='', value=''){
+  const f = el('div',{class:'field'});
+  f.append(
+    el('label',{text:label}),
+    el('input',{class:'input', name, type, placeholder, value})
+  );
+  return f;
+}
+function passwordField(label='পাসওয়ার্ড', name='password'){
+  const f = el('div',{class:'field'});
+  const ig = el('div',{class:'input-group'});
+  const inp = el('input',{class:'input', name, type:'password', placeholder:'••••••••'});
+  const btn = el('button',{class:'btn btn-ghost ig-btn', type:'button'}, el('i',{class:'ri-eye-line'}));
+  btn.addEventListener('click', ()=>{
+    inp.type = inp.type==='password' ? 'text' : 'password';
+    btn.firstChild.className = inp.type==='password'?'ri-eye-line':'ri-eye-off-line';
+  });
+  ig.append(inp, btn);
+  f.append(el('label',{text:label}), ig);
+  return f;
+}
+
+function renderRegister(){
+  const root = $('#app'); root.innerHTML = '';
+  const wrap = el('div',{class:'auth-wrap'});
+  const card = el('div',{class:'auth-card'});
+  card.append(
+    el('div',{class:'auth-logo'}, el('span',{class:'brand-emoji', text:'💬'})),
+    el('div',{class:'auth-title brand-name', text:'Bondhu'}),
+    el('div',{class:'auth-sub', text:'নতুন অ্যাকাউন্ট তৈরি করুন'})
+  );
+  const errBox = el('div',{class:'small', style:{color:'var(--danger)', minHeight:'18px'}});
+  const grid = el('div',{class:'auth-grid'});
+  const f = (l,n,t='text',p='',cls='')=>{ const x = field(l,n,t,p); if(cls) x.classList.add(cls); return x; };
+  grid.append(
+    f('পুরো নাম','name','text','আপনার পূর্ণ নাম','full'),
+    f('ইউজারনেম','username','text','যেমন: nafiz_iqbal'),
+    f('ফোন','phone','tel','+8801'),
+    f('ইমেইল','email','email','you@mail.com','full'),
+    f('ক্লাস','klass','text','যেমন: HSC 1st year'),
+    f('পজিশন/সেকশন','position','text','যেমন: A, B, C'),
+    f('রোল নম্বর','roll','text','রোল'),
+    f('আইডি নম্বর','idnum','text','আইডি'),
+  );
+  const fp = passwordField('পাসওয়ার্ড','password'); fp.classList.add('full'); grid.append(fp);
+  const submit = el('button',{class:'btn btn-primary btn-block', text:'রেজিস্টার'});
+  const foot = el('div',{class:'auth-foot'},
+    el('span',{text:'অ্যাকাউন্ট আছে? '}),
+    el('a',{href:'#login', text:'লগইন'})
+  );
+  submit.addEventListener('click', async ()=>{
+    errBox.textContent = '';
+    const data = {};
+    $$('.input', card).forEach(i => data[i.name] = i.value.trim());
+    if(!data.name || !data.email || !data.password || !data.username){
+      errBox.textContent = 'নাম, ইউজারনেম, ইমেইল এবং পাসওয়ার্ড আবশ্যক'; return;
+    }
+    if(!/^[a-zA-Z0-9_.]{3,24}$/.test(data.username)){
+      errBox.textContent = 'ইউজারনেমে শুধু a-z, 0-9, _ এবং . থাকবে (৩-২৪ অক্ষর)'; return;
+    }
+    submit.disabled = true; submit.innerHTML='<span class="spinner"></span>';
+    try{
+      // username uniqueness via transaction
+      const unameRef = doc(db,'usernames', data.username.toLowerCase());
+      const exists = await getDoc(unameRef);
+      if(exists.exists()){ errBox.textContent = 'এই ইউজারনেম ইতিমধ্যে আছে'; return; }
+      const cred = await createUserWithEmailAndPassword(auth, data.email, data.password);
+      await updateProfile(cred.user, { displayName: data.name });
+      const profile = {
+        uid: cred.user.uid,
+        name: data.name,
+        username: data.username.toLowerCase(),
+        email: data.email,
+        phone: data.phone || '',
+        klass: data.klass || '',
+        position: data.position || '',
+        rollNumber: data.roll || '',
+        idNumber: data.idnum || '',
+        photoURL: '',
+        bio: '',
+        blocked: [],
+        theme: state.theme,
+        role: data.email===ADMIN_EMAIL ? 'admin' : 'user',
+        createdAt: serverTimestamp(),
+        showInfoToOthers: true
+      };
+      await setDoc(doc(db,'users', cred.user.uid), profile);
+      await setDoc(unameRef, { uid: cred.user.uid });
+      toast('অ্যাকাউন্ট তৈরি হয়েছে!', 'success');
+    }catch(e){
+      errBox.textContent = friendlyAuth(e);
+    }finally{
+      submit.disabled = false; submit.textContent = 'রেজিস্টার';
+    }
+  });
+  card.append(errBox, grid, el('div',{style:{height:'12px'}}), submit, foot);
+  wrap.appendChild(card); root.appendChild(wrap);
+}
+
+/* If auth user but no firestore profile yet (edge case) */
+function renderProfileSetup(){
+  // unlikely path: auth exists but no profile doc — let user complete it
+  const root = $('#app'); root.innerHTML='';
+  const wrap = el('div',{class:'auth-wrap'});
+  const card = el('div',{class:'auth-card'});
+  card.append(
+    el('div',{class:'auth-title', text:'প্রোফাইল সম্পূর্ণ করুন'}),
+    el('div',{class:'auth-sub', text:'কয়েকটি তথ্য দিলেই অ্যাকাউন্ট প্রস্তুত হয়ে যাবে'})
+  );
+  const grid = el('div',{class:'auth-grid'});
+  grid.append(
+    field('পুরো নাম','name','text','','full'),
+    field('ইউজারনেম','username'),
+    field('ফোন','phone','tel'),
+    field('ক্লাস','klass'),
+    field('পজিশন','position'),
+    field('রোল','roll'),
+    field('আইডি','idnum')
+  );
+  const errBox = el('div',{class:'small', style:{color:'var(--danger)'}});
+  const submit = el('button',{class:'btn btn-primary btn-block', text:'সংরক্ষণ করুন'});
+  submit.addEventListener('click', async ()=>{
+    const data = {};
+    $$('.input', card).forEach(i => data[i.name] = i.value.trim());
+    if(!data.name || !data.username) { errBox.textContent='নাম এবং ইউজারনেম দিন'; return; }
+    submit.disabled = true; submit.innerHTML = '<span class="spinner"></span>';
+    try{
+      const unameRef = doc(db,'usernames', data.username.toLowerCase());
+      const ex = await getDoc(unameRef); if(ex.exists()){ errBox.textContent='এই ইউজারনেম দখলকৃত'; return; }
+      const profile = {
+        uid: state.user.uid, name: data.name, username: data.username.toLowerCase(),
+        email: state.user.email, phone: data.phone||'', klass: data.klass||'',
+        position: data.position||'', rollNumber: data.roll||'', idNumber: data.idnum||'',
+        photoURL: state.user.photoURL || '', blocked: [], theme: state.theme,
+        role: state.user.email===ADMIN_EMAIL?'admin':'user', createdAt: serverTimestamp()
+      };
+      await setDoc(doc(db,'users', state.user.uid), profile);
+      await setDoc(unameRef, { uid: state.user.uid });
+      state.profile = profile; handleRoute();
+    }catch(e){ errBox.textContent = e.message; }
+    finally{ submit.disabled = false; submit.textContent = 'সংরক্ষণ করুন'; }
+  });
+  card.append(errBox, grid, el('div',{style:{height:'10px'}}), submit);
+  wrap.appendChild(card); root.appendChild(wrap);
+}
+
+/* ============================================================
+   APP SHELL (topbar + 3-pane)
+   ============================================================ */
+function renderShell(){
+  const root = $('#app');
+  root.innerHTML = '';
+  const shell = el('div',{class:'app-shell'});
+
+  /* Topbar */
+  const top = el('div',{class:'topbar'});
+  const brand = el('div',{class:'brand'},
+    el('div',{class:'brand-mark'}, el('span',{class:'brand-emoji', text: state.appConfig.logoEmoji || '💬'})),
+    el('div',{class:'brand-name', text: state.appConfig.name || 'Bondhu'})
+  );
+  brand.style.cursor='pointer'; brand.addEventListener('click', ()=>navigate('#home'));
+  const search = el('div',{class:'search'},
+    el('i',{class:'ri-search-line'}),
+    el('input',{type:'search', placeholder:'মানুষ খুঁজুন...', oninput:(e)=>onSearch(e.target.value)})
+  );
+  const right = el('div',{class:'row gap-2'});
+  // Mobile menu (hamburger)
+  const mLeftBtn = el('button',{class:'btn btn-ghost btn-icon', title:'মেনু', onclick:()=>$('.app-body').classList.toggle('show-left')}, el('i',{class:'ri-menu-line'}));
+  mLeftBtn.style.display = window.innerWidth<=720 ? '' : 'none';
+  const feedBtn = el('button',{class:'btn btn-ghost btn-icon', title:'ফিড', onclick:()=>navigate('#feed')}, el('i',{class:'ri-stack-line'}));
+  const settingsBtn = el('button',{class:'btn btn-ghost btn-icon', title:'সেটিংস', onclick:()=>navigate('#settings')}, el('i',{class:'ri-settings-3-line'}));
+  const adminBtn = state.user.email===ADMIN_EMAIL
+    ? el('a',{class:'btn btn-ghost btn-icon', href:'admin.html', title:'এডমিন প্যানেল'}, el('i',{class:'ri-shield-star-line'}))
+    : null;
+  const profileBtn = el('button',{class:'btn btn-ghost', onclick:()=>navigate('#settings')},
+    avatarEl(state.profile, 'sm'),
+    el('span',{class:'truncate', style:{maxWidth:'120px'}, text: state.profile?.name || 'আমি'})
+  );
+  right.append(mLeftBtn, feedBtn, adminBtn||document.createComment('x'), settingsBtn, profileBtn);
+  top.append(brand, search, right);
+
+  /* Body */
+  const body = el('div',{class:'app-body'});
+  const left = el('div',{class:'panel panel-left'});
+  const mid  = el('div',{class:'panel panel-mid'});
+  const rgt  = el('div',{class:'panel panel-right'});
+  body.append(left, mid, rgt);
+
+  // mobile nav
+  const mNav = el('div',{class:'mobile-nav'},
+    navBtn('চ্যাট','ri-chat-3-line', ()=>{ navigate('#home'); }),
+    navBtn('ফিড','ri-stack-line', ()=>navigate('#feed')),
+    navBtn('সেটিংস','ri-settings-3-line', ()=>navigate('#settings'))
+  );
+
+  shell.append(top, body, mNav);
+  root.appendChild(shell);
+  return { left, mid, rgt };
+}
+function navBtn(label, icon, onclick){
+  return el('button',{class:'nav-btn', onclick}, el('i',{class:icon}), el('span',{text:label}));
+}
+function avatarEl(profile, size=''){
+  const a = el('div',{class:`avatar ${size}`});
+  if(profile?.photoURL){ a.appendChild(el('img',{src: profile.photoURL, alt:profile.name||''})); }
+  else a.textContent = initials(profile?.name || profile?.username || '?');
+  return a;
+}
+function avatarOf(name='', photoURL='', size=''){
+  const a = el('div',{class:`avatar ${size}`});
+  if(photoURL) a.appendChild(el('img',{src:photoURL, alt:name})); else a.textContent = initials(name);
+  return a;
+}
+
+/* ============================================================
+   HOME — left chats list, mid welcome, right profile
+   ============================================================ */
+async function renderHome(){
+  const { left, mid, rgt } = renderShell();
+  paintLeftPanel(left);
+  paintMidWelcome(mid);
+  paintRightProfile(rgt, state.profile);
+}
+
+function paintLeftPanel(left){
+  left.innerHTML = '';
+  // Tabs
+  const tabs = el('div',{class:'tabs'});
+  const tChat = el('div',{class:'tab '+(state.view==='chats'?'active':''), text:'চ্যাট'});
+  const tGrp  = el('div',{class:'tab '+(state.view==='groups'?'active':''), text:'গ্রুপ'});
+  tChat.onclick = ()=>{ state.view='chats'; paintLeftPanel(left); };
+  tGrp .onclick = ()=>{ state.view='groups'; paintLeftPanel(left); };
+  tabs.append(tChat, tGrp);
+
+  // New action
+  const actions = el('div',{class:'row gap-2', style:{padding:'8px'}});
+  if(state.view==='chats'){
+    actions.append(el('button',{class:'btn btn-primary grow', onclick:openNewChatDialog},
+      el('i',{class:'ri-chat-new-line'}), el('span',{text:'নতুন চ্যাট'})));
+  } else {
+    actions.append(el('button',{class:'btn btn-primary grow', onclick:openNewGroupDialog},
+      el('i',{class:'ri-group-line'}), el('span',{text:'নতুন গ্রুপ'})));
+  }
+
+  const list = el('div',{class:'list'});
+  left.append(tabs, actions, list);
+
+  if(state.view==='chats') listenChats(list); else listenGroups(list);
+}
+
+/* My chats (1-on-1) */
+function listenChats(list){
+  list.innerHTML = '<div class="empty"><span class="spinner"></span></div>';
+  const q = query(collection(db,'chats'), where('participants','array-contains', state.user.uid));
+  const un = onSnapshot(q, (snap)=>{
+    if(snap.empty){ list.innerHTML = ''; list.append(emptyState('কোনো চ্যাট নেই','নতুন চ্যাট শুরু করুন','ri-chat-3-line')); return; }
+    const items = snap.docs.map(d=>({ id:d.id, ...d.data() }))
+      .sort((a,b)=> (b.lastMessageAt?.toMillis?.()||0) - (a.lastMessageAt?.toMillis?.()||0));
+    list.innerHTML = '';
+    items.forEach(c => list.appendChild(chatRow(c)));
+  });
+  state.unsub.push(un);
+}
+function chatRow(c){
+  const peerId = c.participants.find(x=>x!==state.user.uid);
+  const row = el('div',{class:'list-item', onclick:()=>navigate('#chat/'+c.id)});
+  if(state.currentChatId===c.id) row.classList.add('active');
+  const av = el('div',{class:'avatar'}, '?');
+  row.appendChild(av);
+  const meta = el('div',{class:'meta'},
+    el('div',{class:'top'},
+      el('div',{class:'name truncate', text:'...'}),
+      el('div',{class:'time', text: fmtTime(c.lastMessageAt)})
+    ),
+    el('div',{class:'last truncate', text: c.lastMessage || ''})
+  );
+  row.appendChild(meta);
+
+  // Resolve peer name + presence
+  getDoc(doc(db,'users', peerId)).then(s=>{
+    if(!s.exists()) return;
+    const p = s.data();
+    av.innerHTML='';
+    if(p.photoURL) av.appendChild(el('img',{src:p.photoURL})); else av.textContent = initials(p.name);
+    const nameEl = $('.name', meta); nameEl.textContent = p.name;
+    // presence
+    const pun = onValue(rref(rtdb, `presence/${peerId}`), (s)=>{
+      const v = s.val();
+      const dot = $('.online-dot', av);
+      if(v?.online){
+        if(!dot){ av.appendChild(el('div',{class:'online-dot'})); }
+      } else if(dot) dot.remove();
+    });
+    state.unsub.push(()=>pun());
+  });
+  return row;
+}
+
+function listenGroups(list){
+  list.innerHTML = '<div class="empty"><span class="spinner"></span></div>';
+  const q = query(collection(db,'groups'), where('members','array-contains', state.user.uid));
+  const un = onSnapshot(q, (snap)=>{
+    if(snap.empty){ list.innerHTML = ''; list.append(emptyState('কোনো গ্রুপ নেই','নতুন গ্রুপ তৈরি করুন','ri-group-line')); return; }
+    const items = snap.docs.map(d=>({id:d.id,...d.data()}))
+      .sort((a,b)=> (b.lastMessageAt?.toMillis?.()||0) - (a.lastMessageAt?.toMillis?.()||0));
+    list.innerHTML='';
+    items.forEach(g=>{
+      const row = el('div',{class:'list-item', onclick:()=>navigate('#group/'+g.id)},
+        avatarOf(g.name, g.photoURL),
+        el('div',{class:'meta'},
+          el('div',{class:'top'},
+            el('div',{class:'name truncate', text:g.name}),
+            el('div',{class:'time', text: fmtTime(g.lastMessageAt)})
+          ),
+          el('div',{class:'last truncate', text:g.lastMessage || `${g.members.length} জন সদস্য`})
+        )
+      );
+      list.appendChild(row);
+    });
+  });
+  state.unsub.push(un);
+}
+
+function emptyState(title, hint, icon='ri-chat-3-line'){
+  return el('div',{class:'empty'},
+    el('i',{class:icon}),
+    el('div',{class:'bold', text:title}),
+    el('div',{class:'small soft', text:hint})
+  );
+}
+
+/* New chat / new group dialogs */
+async function openNewChatDialog(){
+  const m = modal({ title:'নতুন চ্যাট', body: el('div',{text:'লোড হচ্ছে...'})});
+  const userList = el('div',{class:'list', style:{maxHeight:'60vh', overflowY:'auto'}});
+  const search = el('input',{class:'input', placeholder:'নাম বা ইউজারনেম দিয়ে খুঁজুন...'});
+  m.body.innerHTML = ''; m.body.append(search, userList);
+  const usersSnap = await getDocs(collection(db,'users'));
+  const allUsers = usersSnap.docs.map(d=>d.data()).filter(u => u.uid !== state.user.uid && !state.blockedUids.includes(u.uid));
+  function paint(filter=''){
+    userList.innerHTML='';
+    allUsers
+      .filter(u => !filter || u.name?.toLowerCase().includes(filter) || u.username?.toLowerCase().includes(filter))
+      .slice(0,50)
+      .forEach(u=>{
+        const row = el('div',{class:'list-item', onclick: async ()=>{
+          const cid = await ensureChatWith(u.uid);
+          m.close(); navigate('#chat/'+cid);
+        }},
+          avatarOf(u.name, u.photoURL),
+          el('div',{class:'meta'},
+            el('div',{class:'name', text:u.name}),
+            el('div',{class:'small muted', text:'@'+u.username})
+          )
+        );
+        userList.appendChild(row);
+      });
+    if(!userList.children.length) userList.append(el('div',{class:'small muted', style:{padding:'14px'}, text:'কেউ পাওয়া যায়নি'}));
+  }
+  search.addEventListener('input',()=>paint(search.value.trim().toLowerCase()));
+  paint();
+}
+async function ensureChatWith(peerUid){
+  // chat id = sorted uids joined
+  const ids = [state.user.uid, peerUid].sort();
+  const id = ids.join('_');
+  const ref = doc(db,'chats', id);
+  const snap = await getDoc(ref);
+  if(!snap.exists()){
+    await setDoc(ref, {
+      participants: ids, type:'private',
+      lastMessage:'', lastMessageAt: serverTimestamp(),
+      createdAt: serverTimestamp(),
+    });
+  }
+  return id;
+}
+
+async function openNewGroupDialog(){
+  const m = modal({ title:'নতুন গ্রুপ', body: el('div',{text:'লোড...'})});
+  const nameI = el('input',{class:'input', placeholder:'গ্রুপের নাম'});
+  const photoI = el('input',{class:'input', placeholder:'গ্রুপ ছবি লিংক (অপশনাল)'});
+  const search = el('input',{class:'input', placeholder:'মেম্বার খুঁজুন...'});
+  const lst = el('div',{class:'list', style:{maxHeight:'40vh', overflowY:'auto', border:'1px solid var(--border)', borderRadius:'12px'}});
+  const selected = new Set();
+  const sb = el('button',{class:'btn btn-primary btn-block', text:'গ্রুপ তৈরি করুন'});
+  m.body.innerHTML=''; m.body.append(nameI, photoI, search, lst, sb);
+
+  const usersSnap = await getDocs(collection(db,'users'));
+  const all = usersSnap.docs.map(d=>d.data()).filter(u=>u.uid!==state.user.uid);
+  function paint(f=''){
+    lst.innerHTML='';
+    all.filter(u=> !f || u.name?.toLowerCase().includes(f) || u.username?.toLowerCase().includes(f))
+       .slice(0,80).forEach(u=>{
+      const checked = selected.has(u.uid);
+      const row = el('div',{class:'list-item', onclick:()=>{
+        if(selected.has(u.uid)) selected.delete(u.uid); else selected.add(u.uid);
+        paint(search.value.trim().toLowerCase());
+      }},
+        avatarOf(u.name, u.photoURL),
+        el('div',{class:'meta'}, el('div',{class:'name', text:u.name}), el('div',{class:'small muted', text:'@'+u.username})),
+        el('i',{class: checked?'ri-checkbox-circle-fill':'ri-checkbox-blank-circle-line', style:{color: checked?'var(--accent)':'var(--text-mute)', fontSize:'22px'}})
+      );
+      lst.appendChild(row);
+    });
+  }
+  search.addEventListener('input',()=>paint(search.value.trim().toLowerCase())); paint();
+  sb.addEventListener('click', async ()=>{
+    if(!nameI.value.trim()){ toast('নাম দিন','error'); return; }
+    if(selected.size<1){ toast('অন্তত ১ জন সদস্য নির্বাচন করুন','error'); return; }
+    sb.disabled=true; sb.innerHTML='<span class="spinner"></span>';
+    try{
+      const ref = await addDoc(collection(db,'groups'),{
+        name: nameI.value.trim(),
+        photoURL: photoI.value.trim()||'',
+        members: [state.user.uid, ...selected],
+        admins: [state.user.uid],
+        createdBy: state.user.uid,
+        createdAt: serverTimestamp(),
+        lastMessage:'',
+        lastMessageAt: serverTimestamp()
+      });
+      toast('গ্রুপ তৈরি!','success');
+      m.close();
+      navigate('#group/'+ref.id);
+    }catch(e){ toast(e.message,'error'); }
+    finally{ sb.disabled=false; sb.textContent='গ্রুপ তৈরি করুন'; }
+  });
+}
+
+/* ============================================================
+   MID — Welcome / Stories / etc
+   ============================================================ */
+async function paintMidWelcome(mid){
+  mid.innerHTML = '';
+  // Stories rail
+  const rail = el('div',{class:'stories-rail'});
+  rail.append(addStoryCell());
+  mid.append(rail);
+  loadStories(rail);
+
+  const empty = el('div',{class:'empty'},
+    el('i',{class:'ri-chat-smile-3-line'}),
+    el('div',{class:'bold', text:'Bondhu তে স্বাগতম'}),
+    el('div',{class:'small soft', text:'বাম পাশে চ্যাট নির্বাচন করুন বা নতুন চ্যাট শুরু করুন।'})
+  );
+  mid.append(empty);
+}
+
+function addStoryCell(){
+  const c = el('div',{class:'story-cell add', onclick: openCreateStory},
+    el('div',{class:'story-ring'}, el('i',{class:'ri-add-line'})),
+    el('div',{class:'name', text:'আপনি'})
+  );
+  return c;
+}
+function loadStories(rail){
+  // Clear existing peer cells
+  $$('.story-cell:not(.add)', rail).forEach(x=>x.remove());
+  const since = Timestamp.fromDate(new Date(Date.now() - 24*3600*1000));
+  const q = query(collection(db,'stories'), where('createdAt','>', since));
+  const un = onSnapshot(q, (snap)=>{
+    $$('.story-cell:not(.add)', rail).forEach(x=>x.remove());
+    // group by uid
+    const map = new Map();
+    snap.docs.forEach(d=>{
+      const v = d.data(); const list = map.get(v.uid) || [];
+      list.push({ id:d.id, ...v });
+      map.set(v.uid, list);
+    });
+    // own first
+    const order = [...map.keys()].sort((a,b)=> a===state.user.uid? -1 : b===state.user.uid? 1 : 0);
+    order.forEach(uid=>{
+      const stories = map.get(uid).sort((a,b)=> (a.createdAt?.toMillis?.()||0) - (b.createdAt?.toMillis?.()||0));
+      // build a placeholder, then resolve user name
+      const cell = el('div',{class:'story-cell', onclick:()=>openStoryViewer(stories, uid)},
+        el('div',{class:'story-ring'}, el('div',{class:'avatar-fb', text:'?'})),
+        el('div',{class:'name truncate', text:'...'})
+      );
+      rail.appendChild(cell);
+      getDoc(doc(db,'users', uid)).then(s=>{
+        if(!s.exists()) return;
+        const p = s.data();
+        const ring = $('.story-ring', cell);
+        ring.innerHTML='';
+        if(p.photoURL) ring.appendChild(el('img',{src:p.photoURL, class:'avatar-fb'}));
+        else { const a = el('div',{class:'avatar-fb', style:{display:'flex',alignItems:'center',justifyContent:'center',fontWeight:'700'}}); a.textContent = initials(p.name); ring.appendChild(a); }
+        $('.name', cell).textContent = uid===state.user.uid?'আপনি':p.name;
+      });
+    });
+  });
+  state.unsub.push(un);
+}
+
+async function openCreateStory(){
+  const m = modal({title:'নতুন স্টোরি'});
+  const tabs = el('div',{class:'tabs', style:{borderRadius:'10px', background:'var(--surface-2)'}});
+  const tT = el('div',{class:'tab active', text:'টেক্সট'});
+  const tI = el('div',{class:'tab', text:'ছবি (লিংক)'});
+  const fileBtn = el('button',{class:'tab', text:'ছবি (ফাইল)'});
+  tabs.append(tT, tI, fileBtn);
+  const txt = el('textarea',{class:'textarea', placeholder:'কিছু লিখুন... 😀✨'});
+  const link = el('input',{class:'input', placeholder:'https://...', style:{display:'none'}});
+  const file = el('input',{type:'file', accept:'image/*', class:'input', style:{display:'none'}});
+  const submit = el('button',{class:'btn btn-primary btn-block', text:'পোস্ট করুন'});
+  m.body.append(tabs, txt, link, file, submit);
+  let mode='text';
+  tT.onclick = ()=>{mode='text'; tT.classList.add('active'); tI.classList.remove('active'); fileBtn.classList.remove('active'); txt.style.display=''; link.style.display='none'; file.style.display='none';};
+  tI.onclick = ()=>{mode='link'; tI.classList.add('active'); tT.classList.remove('active'); fileBtn.classList.remove('active'); txt.style.display=''; link.style.display=''; file.style.display='none';};
+  fileBtn.onclick = ()=>{mode='file'; fileBtn.classList.add('active'); tT.classList.remove('active'); tI.classList.remove('active'); txt.style.display=''; link.style.display='none'; file.style.display='';};
+  submit.addEventListener('click', async ()=>{
+    submit.disabled = true; submit.innerHTML = '<span class="spinner"></span>';
+    try{
+      let mediaURL = '';
+      if(mode==='link') mediaURL = link.value.trim();
+      else if(mode==='file' && file.files[0]){
+        const f = file.files[0];
+        const ref = sref(stg, `stories/${state.user.uid}/${Date.now()}_${f.name}`);
+        await uploadBytes(ref, f); mediaURL = await getDownloadURL(ref);
+      }
+      await addDoc(collection(db,'stories'), {
+        uid: state.user.uid,
+        text: txt.value.trim(),
+        mediaURL,
+        createdAt: serverTimestamp(),
+        expiresAt: Timestamp.fromDate(new Date(Date.now()+24*3600*1000))
+      });
+      toast('স্টোরি পোস্ট হয়েছে','success');
+      m.close();
+    }catch(e){ toast(e.message,'error'); }
+    finally{ submit.disabled=false; submit.textContent='পোস্ট করুন'; }
+  });
+}
+
+function openStoryViewer(stories, uid){
+  const root = $('#modal-root');
+  const v = el('div',{class:'story-viewer'});
+  const content = el('div',{class:'content'});
+  const progress = el('div',{class:'progress'});
+  stories.forEach(()=> progress.appendChild(el('div',{class:'bar'}, el('i'))));
+  const head = el('div',{class:'head'},
+    el('div',{class:'avatar sm', style:{background:'#222'}, text:'?'}),
+    el('div',{class:'col'}, el('div',{class:'bold', text:'...'}), el('div',{class:'tiny', text:''})),
+    el('button',{class:'x btn btn-ghost', onclick:close}, el('i',{class:'ri-close-line'}))
+  );
+  content.append(progress, head);
+  v.appendChild(content); root.appendChild(v);
+
+  // resolve user
+  getDoc(doc(db,'users', uid)).then(s=>{
+    if(!s.exists()) return;
+    const p = s.data();
+    const ah = $('.avatar', head); ah.innerHTML='';
+    if(p.photoURL) ah.appendChild(el('img',{src:p.photoURL})); else ah.textContent = initials(p.name);
+    $('.bold', head).textContent = uid===state.user.uid?'আপনি':p.name;
+  });
+
+  let idx = 0;
+  function render(){
+    // mark progress bars
+    $$('.bar > i', progress).forEach((b,i)=>{
+      b.style.width = i<idx?'100%' : i===idx?'0%' : '0%';
+      b.style.transition = i===idx? 'width 5s linear' : 'none';
+    });
+    requestAnimationFrame(()=>{ const b = $$('.bar > i', progress)[idx]; if(b) b.style.width='100%'; });
+
+    // remove old slide
+    $$('.story-slide', content).forEach(x=>x.remove());
+    const s = stories[idx];
+    const slide = el('div',{class:'story-slide', style:{position:'absolute', inset:0}});
+    if(s.mediaURL) slide.appendChild(el('img',{src:s.mediaURL}));
+    if(s.text){
+      const t = el('div',{class:'text '+(s.mediaURL?'':'has-bg'), text: s.text});
+      if(s.mediaURL){ t.style.position='absolute'; t.style.bottom='40px'; t.style.background='rgba(0,0,0,.5)'; t.style.padding='8px 12px'; t.style.borderRadius='10px'; }
+      slide.appendChild(t);
+    }
+    slide.addEventListener('click', (e)=>{
+      const r = slide.getBoundingClientRect();
+      if(e.clientX - r.left > r.width/2) next(); else prev();
+    });
+    content.appendChild(slide);
+    clearTimeout(timer); timer = setTimeout(next, 5000);
+  }
+  let timer;
+  function next(){ idx++; if(idx>=stories.length){ close(); return; } render(); }
+  function prev(){ idx = Math.max(0, idx-1); render(); }
+  function close(){ clearTimeout(timer); v.remove(); }
+  render();
+}
+
+/* ============================================================
+   CHAT (1-on-1)
+   ============================================================ */
+async function renderChat(chatId){
+  const { left, mid, rgt } = renderShell();
+  paintLeftPanel(left);
+  state.currentChatId = chatId;
+  await paintChatMid(mid, chatId, /*isGroup*/false);
+  paintRightChatInfo(rgt, chatId, false);
+}
+
+async function renderGroup(groupId){
+  state.view='groups';
+  const { left, mid, rgt } = renderShell();
+  paintLeftPanel(left);
+  state.currentGroupId = groupId;
+  await paintChatMid(mid, groupId, true);
+  paintRightChatInfo(rgt, groupId, true);
+}
+
+async function paintChatMid(mid, id, isGroup){
+  mid.innerHTML = '';
+  // Header
+  const head = el('div',{class:'chat-header'});
+  const back = el('button',{class:'btn btn-ghost btn-icon', onclick:()=>navigate('#home')}, el('i',{class:'ri-arrow-left-line'}));
+  const av = el('div',{class:'avatar'},'?');
+  const meta = el('div',{class:'col grow', style:{minWidth:0}},
+    el('div',{class:'name truncate', text:'...'}),
+    el('div',{class:'status', text:'লোড হচ্ছে...'})
+  );
+  head.append(back, av, meta,
+    el('button',{class:'btn btn-ghost btn-icon', title:'তথ্য', onclick:()=>$('.app-body').classList.toggle('show-right')}, el('i',{class:'ri-information-line'}))
+  );
+  // Body
+  const body = el('div',{class:'chat-msgs'});
+  // Composer
+  const composer = chatComposer(id, isGroup);
+  mid.append(head, body, composer);
+
+  // Resolve header info
+  if(isGroup){
+    const gs = await getDoc(doc(db,'groups', id));
+    if(!gs.exists()){ toast('গ্রুপ পাওয়া যায়নি','error'); navigate('#home'); return; }
+    const g = gs.data();
+    av.innerHTML=''; if(g.photoURL) av.appendChild(el('img',{src:g.photoURL})); else av.textContent = initials(g.name);
+    $('.name', meta).textContent = g.name;
+    $('.status', meta).textContent = `${g.members.length} সদস্য`;
+  } else {
+    const cs = await getDoc(doc(db,'chats', id));
+    if(!cs.exists()){ toast('চ্যাট পাওয়া যায়নি','error'); navigate('#home'); return; }
+    const c = cs.data();
+    const peerId = c.participants.find(x=>x!==state.user.uid);
+    state.currentChatPeer = peerId;
+    const ps = await getDoc(doc(db,'users', peerId));
+    if(ps.exists()){
+      const p = ps.data();
+      av.innerHTML=''; if(p.photoURL) av.appendChild(el('img',{src:p.photoURL})); else av.textContent = initials(p.name);
+      $('.name', meta).textContent = p.name;
+      av.style.cursor='pointer'; av.onclick=()=>navigate('#profile/'+peerId);
+      $('.name', meta).style.cursor='pointer'; $('.name', meta).onclick=()=>navigate('#profile/'+peerId);
+      const pu = onValue(rref(rtdb,`presence/${peerId}`), (s)=>{
+        const v = s.val();
+        $('.status', meta).textContent = v?.online ? 'অনলাইন' : v?.lastSeen ? 'সর্বশেষ: '+ fmtTime(typeof v.lastSeen==='number'?v.lastSeen:v.lastSeen) : 'অফলাইন';
+      });
+      state.unsub.push(()=>pu());
+    }
+  }
+
+  // Listen messages
+  const mq = query(collection(db, isGroup?'groups':'chats', id, 'messages'), orderBy('createdAt','asc'), limit(500));
+  const un = onSnapshot(mq, (snap)=>{
+    body.innerHTML = '';
+    let lastDay = '';
+    snap.docs.forEach(d=>{
+      const m = d.data();
+      const dk = dayKey(m.createdAt);
+      if(dk !== lastDay){
+        body.appendChild(el('div',{class:'day-divider', text: dk}));
+        lastDay = dk;
+      }
+      body.appendChild(messageRow(m, d.id, id, isGroup));
+    });
+    body.scrollTop = body.scrollHeight;
+  });
+  state.unsub.push(un);
+}
+
+function messageRow(m, mid, chatId, isGroup){
+  const me = m.from === state.user.uid;
+  const row = el('div',{class:'bubble-row '+(me?'me':'')});
+  if(!me && isGroup){
+    // tiny avatar + name
+    row.appendChild(avatarOf(m.fromName||'', m.fromPhoto||'', 'sm'));
+  }
+  const b = el('div',{class:'bubble'});
+  if(m.type==='image' && m.mediaURL){
+    b.classList.add('media');
+    b.appendChild(el('img',{src:m.mediaURL}));
+    if(m.text) b.appendChild(el('div',{style:{padding:'6px 8px'}, text:m.text}));
+  } else if(m.type==='voice' && m.mediaURL){
+    b.classList.add('voice');
+    b.appendChild(el('audio',{controls:true, src:m.mediaURL}));
+  } else {
+    b.appendChild(el('div',{text: m.text||''}));
+  }
+  if(!me && isGroup) b.insertBefore(el('div',{class:'tiny semibold', style:{marginBottom:'2px', color:'var(--primary-2)'}, text: m.fromName||''}), b.firstChild);
+  b.appendChild(el('span',{class:'ts', text: fmtTime(m.createdAt)}));
+  row.appendChild(b);
+  return row;
+}
+
+function chatComposer(id, isGroup){
+  const c = el('div',{class:'chat-composer', style:{position:'relative'}});
+  const inp = el('div',{class:'compose-input', contenteditable:'true', 'data-ph':'কিছু লিখুন...'});
+  inp.addEventListener('keydown',(e)=>{
+    if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); send(); }
+  });
+  const emojiBtn = el('button',{class:'btn btn-ghost btn-icon', title:'ইমোজি', type:'button'}, el('i',{class:'ri-emotion-line'}));
+  let emojiPop;
+  emojiBtn.onclick = (e)=>{
+    e.stopPropagation();
+    if(emojiPop){ emojiPop.remove(); emojiPop=null; return; }
+    emojiPop = makeEmojiPop((emo)=>{
+      inp.focus();
+      document.execCommand('insertText', false, emo);
+    });
+    c.appendChild(emojiPop);
+    setTimeout(()=>{
+      const off = (ev)=>{ if(!emojiPop?.contains(ev.target) && ev.target!==emojiBtn){ emojiPop?.remove(); emojiPop=null; document.removeEventListener('click', off);} };
+      document.addEventListener('click', off);
+    },10);
+  };
+  const fileBtn = el('button',{class:'btn btn-ghost btn-icon', title:'ছবি/ফাইল', type:'button'}, el('i',{class:'ri-attachment-2'}));
+  const fileIn = el('input',{type:'file', accept:'image/*', style:{display:'none'}});
+  fileBtn.onclick = ()=> fileIn.click();
+  fileIn.onchange = async ()=>{
+    const f = fileIn.files[0]; if(!f) return;
+    if(f.size > 8*1024*1024){ toast('৮ MB এর কম ফাইল দিন','error'); return; }
+    const ref = sref(stg, `${isGroup?'groups':'chats'}/${id}/${Date.now()}_${f.name}`);
+    toast('আপলোড হচ্ছে...','info');
+    try{
+      await uploadBytes(ref, f);
+      const url = await getDownloadURL(ref);
+      await sendMessage(id, isGroup, { type:'image', mediaURL: url, text: inp.innerText.trim() });
+      inp.innerText = '';
+    }catch(e){ toast(e.message,'error'); }
+  };
+
+  const linkBtn = el('button',{class:'btn btn-ghost btn-icon', title:'ছবি লিংক', type:'button'}, el('i',{class:'ri-link'}));
+  linkBtn.onclick = async ()=>{
+    const url = prompt('ছবির লিংক দিন:'); if(!url) return;
+    await sendMessage(id, isGroup, { type:'image', mediaURL: url, text: inp.innerText.trim() });
+    inp.innerText = '';
+  };
+
+  // Voice
+  const voiceBtn = el('button',{class:'btn btn-ghost btn-icon', title:'ভয়েস (চেপে ধরে রাখুন)', type:'button'}, el('i',{class:'ri-mic-line'}));
+  let mediaRec, chunks=[];
+  const startRec = async ()=>{
+    try{
+      const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+      mediaRec = new MediaRecorder(stream); chunks=[];
+      mediaRec.ondataavailable = e => chunks.push(e.data);
+      mediaRec.onstop = async ()=>{
+        stream.getTracks().forEach(t=>t.stop());
+        const blob = new Blob(chunks,{type:'audio/webm'});
+        if(blob.size<500) return;
+        const ref = sref(stg, `${isGroup?'groups':'chats'}/${id}/voice_${Date.now()}.webm`);
+        toast('ভয়েস আপলোড হচ্ছে...','info');
+        try{
+          await uploadBytes(ref, blob);
+          const url = await getDownloadURL(ref);
+          await sendMessage(id, isGroup, { type:'voice', mediaURL: url, text: '' });
+        }catch(e){ toast(e.message,'error'); }
+      };
+      mediaRec.start();
+      voiceBtn.style.color = 'var(--danger)';
+      toast('রেকর্ডিং... ছাড়লে পাঠাবে','info', 1200);
+    }catch(e){ toast('মাইক অনুমতি দরকার','error'); }
+  };
+  const stopRec = ()=>{ if(mediaRec && mediaRec.state==='recording'){ mediaRec.stop(); voiceBtn.style.color=''; } };
+  voiceBtn.addEventListener('mousedown', startRec);
+  voiceBtn.addEventListener('mouseup', stopRec);
+  voiceBtn.addEventListener('mouseleave', stopRec);
+  voiceBtn.addEventListener('touchstart', (e)=>{e.preventDefault(); startRec();});
+  voiceBtn.addEventListener('touchend', stopRec);
+
+  const sendBtn = el('button',{class:'btn btn-primary btn-icon', title:'পাঠান', type:'button'}, el('i',{class:'ri-send-plane-fill'}));
+  sendBtn.onclick = send;
+
+  async function send(){
+    const text = inp.innerText.trim();
+    if(!text) return;
+    inp.innerText = '';
+    await sendMessage(id, isGroup, { type:'text', text });
+  }
+
+  c.append(emojiBtn, fileBtn, linkBtn, voiceBtn, inp, sendBtn, fileIn);
+  return c;
+}
+
+async function sendMessage(id, isGroup, payload){
+  if(state.focusActive && state.user.email!==ADMIN_EMAIL){ toast('ফোকাস মোড চালু — মেসেজ পাঠানো যাবে না','error'); return; }
+  const col = collection(db, isGroup?'groups':'chats', id, 'messages');
+  const m = {
+    from: state.user.uid,
+    fromName: state.profile.name,
+    fromPhoto: state.profile.photoURL || '',
+    type: payload.type || 'text',
+    text: payload.text || '',
+    mediaURL: payload.mediaURL || '',
+    createdAt: serverTimestamp()
+  };
+  await addDoc(col, m);
+  await updateDoc(doc(db, isGroup?'groups':'chats', id), {
+    lastMessage: payload.text || (payload.type==='image'?'📷 ছবি': payload.type==='voice'?'🎙️ ভয়েস':''),
+    lastMessageAt: serverTimestamp()
+  });
+}
+
+const EMOJIS = ['😀','😁','😂','🤣','😊','😍','🥰','😘','😎','🤩','🤔','😐','😴','🥺','😭','😡','🤯','🥳','😇','🤗','👍','👎','👏','🙏','💪','🔥','✨','💯','🎉','❤️','🩷','🧡','💛','💚','💙','💜','🖤','🤍','🤎','💔','💕','💖','💞','📚','✏️','🎓','🏫','🌟','⭐','🌙','☀️','🌈','🌸','🌺','🌷','🌹','🍀','🍎','🍕','🍔','🍩','🍫','☕','🧋','🎮','🎵','🎶','📱','💻','🚀','✈️','🏆','💡','📌'];
+function makeEmojiPop(onPick){
+  const p = el('div',{class:'emoji-pop'});
+  EMOJIS.forEach(e=> p.appendChild(el('button',{type:'button', text:e, onclick:()=>onPick(e)})));
+  return p;
+}
+
+/* Right panel: chat info / profile of peer or group */
+async function paintRightChatInfo(rgt, id, isGroup){
+  rgt.innerHTML='';
+  if(isGroup){
+    const gs = await getDoc(doc(db,'groups', id)); if(!gs.exists()) return;
+    const g = gs.data();
+    rgt.append(
+      el('div',{class:'profile-card'},
+        avatarOf(g.name, g.photoURL, 'lg'),
+        el('div',{class:'name', text:g.name}),
+        el('div',{class:'username', text: g.members.length + ' সদস্য'})
+      ),
+      el('div',{class:'right-content'},
+        el('div',{class:'bold', style:{marginBottom:'8px'}, text:'সদস্য'}),
+        ...await Promise.all(g.members.map(async uid=>{
+          const us = await getDoc(doc(db,'users', uid));
+          if(!us.exists()) return el('div');
+          const u = us.data();
+          return el('div',{class:'list-item', onclick:()=>navigate('#profile/'+uid)},
+            avatarOf(u.name, u.photoURL,'sm'),
+            el('div',{class:'meta'}, el('div',{class:'name', text:u.name}), el('div',{class:'small muted', text:'@'+u.username}))
+          );
+        }))
+      )
+    );
+  } else {
+    const cs = await getDoc(doc(db,'chats', id)); if(!cs.exists()) return;
+    const c = cs.data();
+    const peerId = c.participants.find(x=>x!==state.user.uid);
+    const ps = await getDoc(doc(db,'users', peerId)); if(!ps.exists()) return;
+    const p = ps.data();
+    paintRightProfile(rgt, p, /*selfMode=*/false);
+  }
+}
+
+function paintRightProfile(rgt, p, selfMode=true){
+  rgt.innerHTML = '';
+  const card = el('div',{class:'profile-card'},
+    avatarOf(p.name, p.photoURL,'lg'),
+    el('div',{class:'name', text:p.name||''}),
+    el('div',{class:'username', text:'@'+(p.username||'')})
+  );
+  rgt.append(card);
+  const content = el('div',{class:'right-content'});
+  rgt.append(content);
+
+  if(selfMode){
+    content.append(
+      el('button',{class:'btn btn-block', onclick:()=>navigate('#settings')},
+        el('i',{class:'ri-edit-line'}), el('span',{text:'প্রোফাইল এডিট'})
+      )
+    );
+  } else {
+    content.append(
+      el('div',{class:'row gap-2'},
+        el('button',{class:'btn btn-primary grow', onclick: async()=>{
+          const cid = await ensureChatWith(p.uid); navigate('#chat/'+cid);
+        }}, el('i',{class:'ri-chat-1-line'}), el('span',{text:'চ্যাট'})),
+        el('button',{class:'btn btn-danger', onclick: async()=>{
+          if(!await confirmDialog(`@${p.username} কে ব্লক করবেন?`)) return;
+          await updateDoc(doc(db,'users', state.user.uid), { blocked: arrayUnion(p.uid) });
+          toast('ব্লক করা হয়েছে','success');
+        }}, el('i',{class:'ri-forbid-line'}), el('span',{text:'ব্লক'}))
+      )
+    );
+  }
+
+  // Show details only if user allows OR self
+  if(selfMode || p.showInfoToOthers !== false){
+    content.append(
+      el('div',{class:'kv'},
+        el('div',{class:'k', text:'ইমেইল'}), el('div',{text: selfMode? p.email||'' : '—'}),
+        el('div',{class:'k', text:'ফোন'}), el('div',{text: selfMode? p.phone||'' : (p.phone? '••••'+p.phone.slice(-3):'—')}),
+        el('div',{class:'k', text:'ক্লাস'}), el('div',{text: p.klass||'—'}),
+        el('div',{class:'k', text:'পজিশন'}), el('div',{text: p.position||'—'}),
+        el('div',{class:'k', text:'রোল'}), el('div',{text: p.rollNumber||'—'}),
+        el('div',{class:'k', text:'আইডি'}), el('div',{text: selfMode?(p.idNumber||'—'):'—'}),
+      )
+    );
+  }
+}
+
+/* ============================================================
+   PROFILE VIEW (other user)
+   ============================================================ */
+async function renderProfileView(uid){
+  const { left, mid, rgt } = renderShell();
+  paintLeftPanel(left);
+  mid.innerHTML = '<div class="empty"><span class="spinner"></span></div>';
+  const us = await getDoc(doc(db,'users', uid));
+  if(!us.exists()){ mid.innerHTML = ''; mid.append(emptyState('ইউজার পাওয়া যায়নি','','ri-user-search-line')); return; }
+  const u = us.data();
+  paintRightProfile(rgt, u, /*selfMode=*/false);
+
+  mid.innerHTML='';
+  const cover = el('div',{class:'feed'});
+  cover.append(
+    el('div',{class:'profile-card'},
+      avatarOf(u.name, u.photoURL,'lg'),
+      el('div',{class:'name', text:u.name}),
+      el('div',{class:'username', text:'@'+u.username}),
+      el('div',{class:'row gap-2', style:{marginTop:'8px'}},
+        el('button',{class:'btn btn-primary', onclick: async()=>{ const cid=await ensureChatWith(uid); navigate('#chat/'+cid); }},
+          el('i',{class:'ri-chat-1-line'}), el('span',{text:'মেসেজ'})),
+        el('button',{class:'btn', onclick: async()=>{
+          if(!await confirmDialog('ব্লক করবেন?')) return;
+          await updateDoc(doc(db,'users', state.user.uid), { blocked: arrayUnion(uid) });
+          toast('ব্লক করা হয়েছে','success');
+        }}, el('i',{class:'ri-forbid-line'}), el('span',{text:'ব্লক'}))
+      )
+    ),
+    el('div',{class:'bold', style:{margin:'10px 4px'}, text:'পোস্টসমূহ'})
+  );
+  mid.append(cover);
+
+  // Posts of user
+  const postWrap = el('div',{class:'col gap-3'});
+  cover.append(postWrap);
+  const q = query(collection(db,'posts'), where('uid','==',uid), orderBy('createdAt','desc'), limit(50));
+  const un = onSnapshot(q, snap=>{
+    postWrap.innerHTML='';
+    if(snap.empty){ postWrap.append(emptyState('কোনো পোস্ট নেই','','ri-image-2-line')); return; }
+    snap.docs.forEach(d=> postWrap.appendChild(postCard({id:d.id, ...d.data()}, u)));
+  });
+  state.unsub.push(un);
+}
+
+/* ============================================================
+   FEED
+   ============================================================ */
+async function renderFeed(){
+  const { left, mid } = renderShell();
+  paintLeftPanel(left);
+  mid.innerHTML='';
+  const wrap = el('div',{class:'feed'});
+  wrap.append(
+    el('div',{class:'row between', style:{marginBottom:'8px'}},
+      el('div',{class:'bold', style:{fontSize:'18px'}, text:'ফিড'}),
+      el('button',{class:'btn btn-primary', onclick:openCreatePost}, el('i',{class:'ri-add-line'}), el('span',{text:'পোস্ট'}))
+    )
+  );
+  const feed = el('div',{class:'col gap-3'});
+  wrap.append(feed); mid.append(wrap);
+
+  const q = query(collection(db,'posts'), orderBy('createdAt','desc'), limit(80));
+  const un = onSnapshot(q, async snap=>{
+    feed.innerHTML='';
+    if(snap.empty){ feed.append(emptyState('পোস্ট নেই','প্রথম পোস্টটি আপনিই করুন','ri-image-2-line')); return; }
+    // load author profiles in parallel (cached map)
+    const userCache = new Map();
+    const promises = snap.docs.map(async d=>{
+      const data = { id:d.id, ...d.data() };
+      if(!userCache.has(data.uid)){
+        userCache.set(data.uid, getDoc(doc(db,'users', data.uid)).then(s=> s.exists()?s.data():null));
+      }
+      return [data, await userCache.get(data.uid)];
+    });
+    const items = await Promise.all(promises);
+    items.forEach(([p, u])=> u && feed.appendChild(postCard(p, u)));
+  });
+  state.unsub.push(un);
+
+  mid.appendChild(el('div',{class:'fab', onclick:openCreatePost, title:'নতুন পোস্ট'}, el('i',{class:'ri-add-line'})));
+}
+
+function postCard(p, author){
+  const isOwn = p.uid === state.user.uid;
+  const card = el('div',{class:'post fade-in'});
+  const head = el('div',{class:'post-head'},
+    avatarOf(author.name, author.photoURL,'sm'),
+    el('div',{class:'meta col grow'},
+      el('div',{class:'bold', text:author.name, onclick:()=>navigate('#profile/'+author.uid), style:{cursor:'pointer'}}),
+      el('div',{class:'small muted', text: fmtTime(p.createdAt)})
+    ),
+    el('button',{class:'btn btn-ghost btn-icon', title:'মেনু', onclick:(e)=>{ e.stopPropagation(); openPostMenu(p, isOwn); }}, el('i',{class:'ri-more-2-line'}))
+  );
+  card.append(head);
+  if(p.mediaURL){
+    card.append(el('div',{class:'post-img'}, el('img',{src:p.mediaURL, loading:'lazy'})));
+  }
+  // Actions
+  const liked = (p.likes||[]).includes(state.user.uid);
+  const actions = el('div',{class:'post-actions'},
+    el('button',{class:'btn btn-ghost', onclick:()=>toggleLike(p.id, liked)},
+      el('i',{class: liked?'ri-heart-fill':'ri-heart-line', style:{color: liked?'#ef4444':''}}),
+      el('span',{text: String((p.likes||[]).length||'')})
+    ),
+    el('button',{class:'btn btn-ghost', onclick:()=>reportPost(p)}, el('i',{class:'ri-flag-line'}), el('span',{text:'রিপোর্ট'}))
+  );
+  card.append(actions);
+  if(p.caption){
+    card.append(el('div',{class:'post-caption'}, el('span',{class:'author', text:author.name}), el('span',{text:p.caption})));
+  }
+  return card;
+}
+
+async function toggleLike(pid, liked){
+  await updateDoc(doc(db,'posts', pid), liked
+    ? { likes: arrayRemove(state.user.uid) }
+    : { likes: arrayUnion(state.user.uid) });
+}
+async function reportPost(p){
+  const reason = prompt('রিপোর্টের কারণ লিখুন:'); if(!reason) return;
+  await addDoc(collection(db,'reports'),{
+    postId: p.id, reportedBy: state.user.uid, reason, createdAt: serverTimestamp(), targetUid: p.uid
+  });
+  toast('রিপোর্ট পাঠানো হয়েছে','success');
+}
+function openPostMenu(p, isOwn){
+  const m = modal({title:'পোস্ট মেনু',
+    body: el('div',{class:'col gap-2'},
+      isOwn ? el('button',{class:'btn btn-danger btn-block', onclick: async()=>{
+        if(!await confirmDialog('পোস্ট মুছে ফেলবেন?','মুছে ফেলুন')) return;
+        await deleteDoc(doc(db,'posts', p.id)); toast('মুছে ফেলা হয়েছে','success'); m.close();
+      }}, el('i',{class:'ri-delete-bin-line'}), el('span',{text:'পোস্ট মুছুন'})) : null,
+      el('button',{class:'btn btn-block', onclick:()=>{ reportPost(p); m.close(); }}, el('i',{class:'ri-flag-line'}), el('span',{text:'রিপোর্ট করুন'})),
+      el('button',{class:'btn btn-block', onclick:()=>{ navigator.clipboard.writeText(location.origin+location.pathname+'#feed'); toast('লিংক কপি'); m.close(); }}, el('i',{class:'ri-link'}), el('span',{text:'লিংক কপি'}))
+    )
+  });
+}
+
+async function openCreatePost(){
+  const m = modal({title:'নতুন পোস্ট'});
+  const cap = el('textarea',{class:'textarea', placeholder:'কিছু লিখুন...'});
+  const link = el('input',{class:'input', placeholder:'ছবির লিংক (অপশনাল)'});
+  const file = el('input',{type:'file', accept:'image/*'});
+  const submit = el('button',{class:'btn btn-primary btn-block', text:'পোস্ট করুন'});
+  m.body.append(
+    el('div',{class:'small muted', text:'ছবি আপলোড করতে ফাইল বেছে নিন অথবা লিংক দিন।'}),
+    file, link, cap, submit
+  );
+  submit.onclick = async ()=>{
+    submit.disabled = true; submit.innerHTML='<span class="spinner"></span>';
+    try{
+      let url = link.value.trim();
+      if(file.files[0]){
+        const f = file.files[0];
+        const ref = sref(stg, `posts/${state.user.uid}/${Date.now()}_${f.name}`);
+        await uploadBytes(ref, f); url = await getDownloadURL(ref);
+      }
+      if(!url && !cap.value.trim()){ toast('কিছু লিখুন বা ছবি দিন','error'); return; }
+      await addDoc(collection(db,'posts'),{
+        uid: state.user.uid, caption: cap.value.trim(), mediaURL: url, likes: [], createdAt: serverTimestamp()
+      });
+      toast('পোস্ট হয়েছে','success'); m.close();
+    }catch(e){ toast(e.message,'error'); }
+    finally{ submit.disabled=false; submit.textContent='পোস্ট করুন'; }
+  };
+}
+
+/* ============================================================
+   SETTINGS
+   ============================================================ */
+async function renderSettings(){
+  const { left, mid } = renderShell();
+  paintLeftPanel(left);
+  mid.innerHTML='';
+  const wrap = el('div',{class:'feed'});
+
+  const card = el('div',{class:'admin-card'});
+  card.append(
+    el('div',{class:'row gap-3', style:{alignItems:'center'}},
+      avatarEl(state.profile,'lg'),
+      el('div',{class:'col grow'},
+        el('div',{class:'bold', style:{fontSize:'18px'}, text: state.profile.name}),
+        el('div',{class:'small muted', text:'@'+state.profile.username})
+      )
+    )
+  );
+
+  // Profile editor
+  const grid = el('div',{class:'auth-grid', style:{marginTop:'12px'}});
+  const f = (l,k,t='text',cls='')=> { const x = field(l, k, t, '', state.profile[k]||''); if(cls) x.classList.add(cls); return x; };
+  grid.append(
+    f('পুরো নাম','name','text','full'),
+    f('ফোন','phone'),
+    f('ক্লাস','klass'),
+    f('পজিশন','position'),
+    f('রোল','rollNumber'),
+    f('আইডি','idNumber'),
+    f('বায়ো','bio','text','full')
+  );
+  card.append(grid);
+
+  // Profile photo
+  const photoWrap = el('div',{class:'col gap-2', style:{marginTop:'8px'}});
+  photoWrap.append(el('div',{class:'small soft', text:'প্রোফাইল ছবি'}));
+  const fileIn = el('input',{type:'file', accept:'image/*'});
+  const linkIn = el('input',{class:'input', placeholder:'অথবা ছবির লিংক', value: state.profile.photoURL||''});
+  photoWrap.append(fileIn, linkIn);
+
+  // Privacy
+  const privacy = el('label',{class:'row gap-2', style:{marginTop:'10px'}});
+  const showInfo = el('input',{type:'checkbox'}); showInfo.checked = state.profile.showInfoToOthers!==false;
+  privacy.append(showInfo, el('span',{text:'অন্য ইউজারদের কাছে আমার তথ্য (ক্লাস, পজিশন ইত্যাদি) দেখাও'}));
+
+  const saveBtn = el('button',{class:'btn btn-primary', text:'সেভ করুন'});
+  saveBtn.onclick = async ()=>{
+    const data = {};
+    $$('.input', grid).forEach(i=>{ data[i.name] = i.value.trim(); });
+    data.showInfoToOthers = showInfo.checked;
+    if(fileIn.files[0]){
+      const f = fileIn.files[0];
+      const ref = sref(stg, `avatars/${state.user.uid}`);
+      saveBtn.disabled=true; saveBtn.textContent='আপলোড...';
+      await uploadBytes(ref, f); data.photoURL = await getDownloadURL(ref);
+    } else if(linkIn.value.trim() !== (state.profile.photoURL||'')){
+      data.photoURL = linkIn.value.trim();
+    }
+    await updateDoc(doc(db,'users', state.user.uid), data);
+    toast('সেভ হয়েছে','success'); renderSettings();
+  };
+  card.append(photoWrap, privacy, el('div',{style:{marginTop:'14px'}}, saveBtn));
+
+  // Theme picker
+  const themeCard = el('div',{class:'admin-card'});
+  themeCard.append(el('div',{class:'bold', text:'থিম'}));
+  const grid2 = el('div',{class:'theme-grid', style:{marginTop:'8px'}});
+  const themes = [
+    ['light','লাইট', 'linear-gradient(135deg,#cfeeff,#d6f5e4)'],
+    ['dark','ডার্ক', 'linear-gradient(135deg,#0f172a,#0a1326)'],
+    ['sky','স্কাই','linear-gradient(135deg,#4cc3ff,#22d3ee)'],
+    ['mint','মিন্ট','linear-gradient(135deg,#34d399,#4cc3ff)'],
+    ['sunset','সানসেট','linear-gradient(135deg,#fb923c,#f43f5e)'],
+    ['ocean','ওশান','linear-gradient(135deg,#3b82f6,#06b6d4)'],
+    ['forest','ফরেস্ট','linear-gradient(135deg,#16a34a,#84cc16)'],
+    ['candy','ক্যান্ডি','linear-gradient(135deg,#ec4899,#a855f7)'],
+  ];
+  themes.forEach(([k,n,bg])=>{
+    const sw = el('div',{class:'theme-swatch '+(state.theme===k?'active':''), style:{background:bg}, onclick: async()=>{
+      applyTheme(k);
+      await updateDoc(doc(db,'users', state.user.uid),{ theme:k });
+      $$('.theme-swatch', grid2).forEach(s=>s.classList.remove('active'));
+      sw.classList.add('active');
+    }});
+    sw.append(el('span',{class:'lbl', text:n}));
+    grid2.append(sw);
+  });
+  themeCard.append(grid2);
+
+  // Blocked users
+  const blockedCard = el('div',{class:'admin-card'});
+  blockedCard.append(el('div',{class:'bold', text:'ব্লক লিস্ট'}));
+  const blkList = el('div',{class:'col gap-2', style:{marginTop:'8px'}});
+  blockedCard.append(blkList);
+  const blocked = state.profile.blocked || [];
+  if(!blocked.length) blkList.append(el('div',{class:'small muted', text:'কেউ ব্লক করা নেই'}));
+  for(const uid of blocked){
+    const us = await getDoc(doc(db,'users', uid)); if(!us.exists()) continue;
+    const u = us.data();
+    blkList.append(
+      el('div',{class:'row between', style:{padding:'8px', border:'1px solid var(--border)', borderRadius:'10px'}},
+        el('div',{class:'row gap-2'}, avatarOf(u.name, u.photoURL,'sm'), el('div',{text:u.name})),
+        el('button',{class:'btn btn-sm', onclick: async()=>{
+          await updateDoc(doc(db,'users', state.user.uid), { blocked: arrayRemove(uid) });
+          toast('আনব্লক করা হয়েছে','success'); renderSettings();
+        }, text:'আনব্লক'})
+      )
+    );
+  }
+
+  // Logout
+  const logoutCard = el('div',{class:'admin-card'});
+  logoutCard.append(
+    el('div',{class:'bold', text:'অ্যাকাউন্ট'}),
+    el('div',{class:'small muted', text: state.user.email}),
+    el('div',{style:{height:'10px'}}),
+    el('button',{class:'btn btn-danger', onclick: async()=>{
+      if(!await confirmDialog('লগআউট করবেন?','লগআউট')) return;
+      try{ await rset(rref(rtdb,`presence/${state.user.uid}`), { online:false, lastSeen: Date.now() }); }catch{}
+      await signOut(auth); toast('লগআউট','info');
+    }}, el('i',{class:'ri-logout-box-line'}), el('span',{text:'লগআউট'}))
+  );
+
+  wrap.append(card, themeCard, blockedCard, logoutCard);
+  mid.append(wrap);
+}
+
+/* ============================================================
+   FOCUS OVERLAY (for end-users)
+   ============================================================ */
+let focusOverlayEl;
+function showFocusOverlay(){
+  if(focusOverlayEl) { tickFocus(); return; }
+  focusOverlayEl = el('div',{class:'focus-overlay'});
+  const card = el('div',{class:'focus-card'});
+  card.append(
+    el('div',{class:'bold', style:{fontSize:'24px'}, text:'🎯 ফোকাস মোড সক্রিয়'}),
+    el('div',{class:'small', style:{marginTop:'6px'}, text: state.focus?.topic || 'এখন পড়াশোনার সময়'}),
+    el('div',{class:'focus-timer', id:'focus-timer-el', style:{marginTop:'14px'}, text:'00:00:00'}),
+    el('div',{class:'small', style:{marginTop:'10px'}, text:'সময় শেষে অ্যাপে ফেরার সময় কয়েকটি প্রশ্নের উত্তর দিতে হবে।'})
+  );
+  focusOverlayEl.append(card);
+  document.body.append(focusOverlayEl);
+  tickFocus();
+}
+function tickFocus(){
+  const t = $('#focus-timer-el', focusOverlayEl);
+  if(!t || !state.focus) return;
+  const end = state.focus.endAt?.toDate ? state.focus.endAt.toDate().getTime() : Number(state.focus.endAt||0);
+  const ms = Math.max(0, end - Date.now());
+  const h = String(Math.floor(ms/3600000)).padStart(2,'0');
+  const m = String(Math.floor(ms/60000)%60).padStart(2,'0');
+  const s = String(Math.floor(ms/1000)%60).padStart(2,'0');
+  t.textContent = `${h}:${m}:${s}`;
+  if(ms<=0){ removeFocusOverlay(); /* will trigger quiz via flag */ return; }
+  setTimeout(tickFocus, 500);
+}
+function removeFocusOverlay(){ if(focusOverlayEl){ focusOverlayEl.remove(); focusOverlayEl=null; } }
+
+let lockEl;
+function showQuizGate(){
+  if(lockEl) return;
+  const qs = state.focus?.questions || [];
+  if(!qs.length){
+    // No questions configured — just clear flag
+    updateDoc(doc(db,'users', state.user.uid),{ pendingQuiz:false }); return;
+  }
+  // pick 2 random
+  const pool = qs.slice().sort(()=>Math.random()-0.5).slice(0, Math.min(2, qs.length));
+  lockEl = el('div',{class:'lock-screen'});
+  const card = el('div',{class:'lock-card'});
+  card.append(el('div',{class:'bold', style:{fontSize:'22px'}, text:'📚 সংক্ষিপ্ত যাচাই'}),
+              el('div',{class:'small', style:{marginTop:'6px'}, text:'অ্যাপে ফিরতে এই ২টি প্রশ্নের উত্তর দিন'}));
+  const inputs=[];
+  pool.forEach((qq,i)=>{
+    const f = el('div',{class:'field', style:{marginTop:'10px', textAlign:'left'}},
+      el('label',{text:(i+1)+'. '+qq.q}),
+      el('input',{class:'input'})
+    );
+    inputs.push({ q:qq, input: $('.input', f) });
+    card.append(f);
+  });
+  const errBox = el('div',{class:'small', style:{color:'#fca5a5', marginTop:'8px'}});
+  const submit = el('button',{class:'btn btn-primary btn-block', style:{marginTop:'12px'}, text:'যাচাই করুন', onclick: async()=>{
+    const wrong = inputs.find(x => norm(x.input.value) !== norm(x.q.a));
+    if(wrong){
+      errBox.textContent = 'একটি বা একাধিক উত্তর ভুল — ১০ মিনিট পর আবার চেষ্টা করুন';
+      const until = Date.now() + 10*60*1000;
+      await updateDoc(doc(db,'users', state.user.uid),{ lockedUntil: until });
+      lockEl.remove(); lockEl=null; showLockTimer(until);
+      return;
+    }
+    await updateDoc(doc(db,'users', state.user.uid),{ pendingQuiz:false });
+    lockEl.remove(); lockEl=null;
+    toast('স্বাগতম! আপনি সঠিক উত্তর দিয়েছেন','success');
+  }});
+  card.append(errBox, submit);
+  lockEl.append(card); document.body.append(lockEl);
+
+  // If already locked
+  const lu = state.profile?.lockedUntil;
+  if(lu && lu > Date.now()){ lockEl.remove(); lockEl=null; showLockTimer(lu); }
+}
+function norm(s){ return String(s||'').trim().toLowerCase().replace(/[।.?!,\s]+$/,''); }
+function showLockTimer(until){
+  if(lockEl) lockEl.remove();
+  lockEl = el('div',{class:'lock-screen'});
+  const card = el('div',{class:'lock-card'});
+  const t = el('div',{class:'focus-timer', text:'10:00'});
+  card.append(el('div',{class:'bold', style:{fontSize:'22px'}, text:'⏳ ১০ মিনিট অপেক্ষা'}),
+              el('div',{class:'small', style:{marginTop:'6px'}, text:'ভুল উত্তরের কারণে অ্যাকাউন্ট সাময়িকভাবে লক'}),
+              t);
+  lockEl.append(card); document.body.append(lockEl);
+  function tick(){
+    const ms = Math.max(0, until - Date.now());
+    const m = String(Math.floor(ms/60000)).padStart(2,'0');
+    const s = String(Math.floor(ms/1000)%60).padStart(2,'0');
+    t.textContent = `${m}:${s}`;
+    if(ms<=0){ lockEl.remove(); lockEl=null; updateDoc(doc(db,'users', state.user.uid),{lockedUntil:null}); showQuizGate(); return; }
+    setTimeout(tick, 500);
+  }
+  tick();
+}
+
+/* ============================================================
+   Search
+   ============================================================ */
+async function onSearch(q){
+  q = q.trim().toLowerCase();
+  if(!q || q.length<2) return;
+  // simple users search via getDocs (small scale)
+  const snap = await getDocs(collection(db,'users'));
+  const matches = snap.docs.map(d=>d.data()).filter(u=> u.uid!==state.user.uid && (
+    (u.name||'').toLowerCase().includes(q) || (u.username||'').toLowerCase().includes(q)
+  )).slice(0,8);
+  // show results in a popover under search
+  $$('#search-pop').forEach(x=>x.remove());
+  if(!matches.length) return;
+  const pop = el('div',{id:'search-pop', style:{
+    position:'absolute', top:'56px', left: '0', background:'var(--surface)',
+    border:'1px solid var(--border)', borderRadius:'12px', boxShadow:'var(--shadow-lg)',
+    width:'min(360px,90vw)', maxHeight:'60vh', overflowY:'auto', zIndex: 70
+  }});
+  matches.forEach(u=>{
+    pop.appendChild(el('div',{class:'list-item', onclick:async()=>{
+      const cid = await ensureChatWith(u.uid); pop.remove(); navigate('#chat/'+cid);
+    }},
+      avatarOf(u.name, u.photoURL,'sm'),
+      el('div',{class:'meta'}, el('div',{class:'name', text:u.name}), el('div',{class:'small muted', text:'@'+u.username}))
+    ));
+  });
+  const search = $('.search'); if(search){ search.style.position='relative'; search.appendChild(pop); }
+  setTimeout(()=>{
+    const off = (e)=>{ if(!pop.contains(e.target)){ pop.remove(); document.removeEventListener('click', off); } };
+    document.addEventListener('click', off);
+  },10);
+}
+
+/* ============================================================
+   Init
+   ============================================================ */
+window.addEventListener('error', (e)=>{ console.error(e.error||e.message); });
+
+// Show login by default if route blank
+if(!location.hash) location.hash = '#login';
+
+</script>
+
+<noscript>
+<div style="padding:24px; text-align:center; font-family: sans-serif;">
+  This app requires JavaScript. অনুগ্রহ করে JavaScript চালু করুন।
+</div>
+</noscript>
+</body>
+</html>
