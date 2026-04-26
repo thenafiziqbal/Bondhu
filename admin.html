@@ -365,7 +365,7 @@ function parseRoute(){
   return { section: section || 'overview', arg };
 }
 function handleRoute(){
-  if(!state.user){ renderAuthGate(); return; }
+  if(!state.user){ renderAuthGate(state.authError||''); return; }
   const { section, arg } = parseRoute();
   state.section = section; state.arg = arg;
   renderShell();
@@ -387,13 +387,15 @@ window.addEventListener('hashchange', handleRoute);
 onAuthStateChanged(auth, u => {
   state.user = u;
   if(u && u.email !== ADMIN_EMAIL){
-    // not admin
+    // Keep the error visible across the upcoming null-user callback
+    state.authError = 'আপনি এডমিন নন। সঠিক admin অ্যাকাউন্ট দিয়ে লগইন করুন।';
     signOut(auth).catch(()=>{});
     state.user = null;
-    renderAuthGate('আপনি এডমিন নন। সঠিক admin অ্যাকাউন্ট দিয়ে লগইন করুন।');
+    renderAuthGate(state.authError);
     return;
   }
   if(u){
+    state.authError = '';
     // load app config — clear any previously attached listeners first
     // to avoid duplicates when onAuthStateChanged fires multiple times
     // (initial load, token refresh, etc.)
