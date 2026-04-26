@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#0f172a" />
+<meta name="robots" content="noindex,nofollow" />
+<title>Bondhu • Admin</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><text y='52' font-size='52'>🛡️</text></svg>">
+
+<style>
+:root{
+  --font-bn: 'Hind Siliguri', 'Inter', system-ui, sans-serif;
+  --radius: 16px;
+  --radius-sm: 12px;
+  --radius-lg: 22px;
+  --shadow-sm: 0 1px 2px rgba(15,23,42,.05);
+  --shadow:    0 6px 20px rgba(15,23,42,.06), 0 2px 6px rgba(15,23,42,.04);
+  --shadow-lg: 0 24px 60px rgba(15,23,42,.18), 0 8px 20px rgba(15,23,42,.08);
+  --transition: .25s cubic-bezier(.4,.0,.2,1);
+
+  /* Admin theme — darker, more "ops console" vibe */
+  --bg:        #f6f8fc;
+  --bg-2:      #ffffff;
+  --surface:   #ffffff;
+  --surface-2: #f1f4fa;
+  --text:      #0e1a2b;
+  --text-soft: #475569;
+  --text-mute: #8696aa;
+  --border:    #e3e9f2;
+  --primary:   #6366f1;       /* indigo */
+  --primary-2: #4f46e5;
+  --accent:    #06b6d4;
+  --accent-2:  #0891b2;
+  --danger:    #ef4444;
+  --warn:      #f59e0b;
+  --ok:        #10b981;
+
+  --gradient-bg: radial-gradient(1200px 600px at 90% -10%, #e0e7ff 0%, transparent 60%),
+                 radial-gradient(900px 500px at -10% 110%, #cffafe 0%, transparent 60%),
+                 linear-gradient(180deg,#f6f8fc 0%, #eef2ff 100%);
+}
+[data-theme="dark"]{
+  --bg:#0a0f1a; --bg-2:#0f172a; --surface:#0f1a2e; --surface-2:#0c1426;
+  --text:#e6edf7; --text-soft:#aab7c8; --text-mute:#6f7d92;
+  --border:#1c2740;
+  --primary:#818cf8; --primary-2:#6366f1; --accent:#22d3ee;
+  --gradient-bg: radial-gradient(1000px 600px at 90% -10%, #1e1b4b 0%, transparent 60%),
+                 radial-gradient(800px 500px at -10% 110%, #083344 0%, transparent 60%),
+                 linear-gradient(180deg,#0a0f1a 0%, #0a1326 100%);
+}
+
+*,*::before,*::after{ box-sizing:border-box; }
+html,body{ margin:0; padding:0; height:100%; overflow:hidden; }
+body{
+  font-family: var(--font-bn);
+  color: var(--text);
+  background: var(--bg);
+  background-image: var(--gradient-bg);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+}
+button,input,textarea,select{ font: inherit; color:inherit; }
+button{ cursor:pointer; border:0; background:transparent; }
+img{ max-width:100%; display:block; }
+a{ color: var(--primary-2); text-decoration:none; }
+::-webkit-scrollbar{ width:8px; height:8px; }
+::-webkit-scrollbar-thumb{ background: var(--border); border-radius:8px; }
+::-webkit-scrollbar-thumb:hover{ background: var(--text-mute); }
+
+.hidden{ display:none !important; }
+.row{ display:flex; align-items:center; }
+.col{ display:flex; flex-direction:column; }
+.gap-1{gap:4px}.gap-2{gap:8px}.gap-3{gap:12px}.gap-4{gap:16px}.gap-5{gap:20px}.gap-6{gap:24px}
+.grow{flex:1; min-width:0; min-height:0;}
+.between{justify-content:space-between;}
+.muted{ color: var(--text-mute); }
+.soft{ color: var(--text-soft); }
+.small{ font-size: 12px; }
+.tiny{ font-size: 11px; }
+.bold{ font-weight: 700; }
+.semibold{ font-weight: 600; }
+.truncate{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.center{align-items:center; justify-content:center;}
+
+.btn{
+  display:inline-flex; align-items:center; gap:8px; justify-content:center;
+  padding:10px 14px; border-radius: 10px; background: var(--surface-2);
+  color: var(--text); font-weight:600; font-size:13px;
+  transition: var(--transition);
+  border:1px solid var(--border);
+}
+.btn:hover{ transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+.btn-primary{
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color:#fff; border:0;
+  box-shadow: 0 8px 18px -8px var(--primary);
+}
+.btn-primary:hover{ filter:brightness(1.05); box-shadow: 0 14px 26px -10px var(--primary); }
+.btn-ghost{ background: transparent; border-color: transparent; }
+.btn-ghost:hover{ background: var(--surface-2); }
+.btn-danger{ background:#fee2e2; color:#b91c1c; border-color:#fecaca; }
+[data-theme="dark"] .btn-danger{ background:#3b1414; color:#fecaca; border-color:#5a1d1d; }
+.btn-block{ width:100%; }
+.btn-icon{ width:38px; height:38px; padding:0; border-radius:50%; }
+.btn-sm{ padding:6px 10px; font-size:12px; border-radius:8px; }
+.btn:disabled{ opacity:.5; cursor:not-allowed; transform:none; }
+
+.input, .textarea, .select{
+  width:100%; padding: 10px 12px;
+  border:1px solid var(--border); border-radius: 10px;
+  background: var(--surface); color: var(--text); outline: none;
+  transition: var(--transition); font-size: 14px;
+}
+.input:focus, .textarea:focus, .select:focus{
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 20%, transparent);
+}
+.textarea{ min-height:80px; resize: vertical; font-family: inherit; }
+.field{ display:flex; flex-direction:column; gap:6px; }
+.field > label{ font-size:12px; color: var(--text-soft); font-weight:600; }
+
+#app{ width:100vw; height:100vh; display:flex; flex-direction:column; }
+
+/* Auth gate */
+.auth-wrap{ width:100vw; height:100vh; display:flex; align-items:center; justify-content:center; padding:16px; }
+.auth-card{
+  width:100%; max-width:440px;
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  border:1px solid var(--border);
+  box-shadow: var(--shadow-lg);
+  padding: 32px;
+}
+.shield-mark{
+  width:72px; height:72px; border-radius:22px;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  display:flex; align-items:center; justify-content:center; color:#fff; font-size:34px;
+  margin: 0 auto 14px;
+  box-shadow: 0 16px 32px -10px var(--primary);
+}
+.auth-title{ text-align:center; font-size:22px; font-weight:800; }
+.auth-sub{ text-align:center; color:var(--text-soft); margin: 6px 0 22px; font-size:13px;}
+
+/* Toast */
+#toasts{ position: fixed; right: 16px; bottom: 16px; z-index: 9999; display:flex; flex-direction:column; gap:8px; }
+.toast{ background: var(--surface); border:1px solid var(--border); padding:10px 14px; border-radius: 12px; box-shadow: var(--shadow-lg); display:flex; align-items:center; gap:10px; min-width: 220px; animation: slide .3s; }
+.toast.success{ border-color: var(--ok); }
+.toast.error{ border-color: var(--danger); }
+.toast.info{ border-color: var(--primary); }
+@keyframes slide{ from{ transform: translateX(20px); opacity:0; } to{ transform:none; opacity:1; } }
+
+/* Modal */
+.modal-back{ position: fixed; inset: 0; background: rgba(15,23,42,.55); display:flex; align-items:center; justify-content:center; z-index: 9000; padding: 16px; animation: fadeIn .2s;}
+@keyframes fadeIn{ from{opacity:0} to{opacity:1} }
+.modal{ background: var(--surface); border:1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); width:100%; max-width: 520px; max-height: 92vh; overflow:auto; }
+.modal-header{ padding: 16px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+.modal-body{ padding: 20px; display:flex; flex-direction:column; gap:14px; }
+
+/* Spinner */
+.spinner{ width:18px; height:18px; border:2px solid var(--border); border-top-color: var(--primary); border-radius:50%; animation: spin 1s linear infinite; display:inline-block; }
+.spinner.lg{ width:36px; height:36px; border-width:3px; }
+@keyframes spin{ to{ transform: rotate(360deg); } }
+
+/* Layout */
+.shell{ display:grid; grid-template-rows: auto 1fr; height:100%; }
+.topbar{
+  display:flex; align-items:center; gap:12px; padding: 10px 16px;
+  background: var(--surface); border-bottom:1px solid var(--border);
+  position: sticky; top:0; z-index: 30;
+}
+.brand{ display:flex; align-items:center; gap:10px; font-weight:800; }
+.brand-mark{
+  width:36px; height:36px; border-radius:10px;
+  background: linear-gradient(135deg,var(--primary),var(--accent));
+  color:#fff; display:flex; align-items:center; justify-content:center;
+  box-shadow: 0 8px 16px -6px var(--primary);
+}
+.body{ display:grid; grid-template-columns: 240px 1fr; height:100%; overflow:hidden; }
+.side{ background: var(--surface); border-right:1px solid var(--border); padding:12px; display:flex; flex-direction:column; gap:4px; overflow-y:auto; }
+.nav-btn{ text-align:left; padding: 10px 12px; border-radius:10px; color: var(--text-soft); font-weight:600; display:flex; align-items:center; gap:10px; font-size:14px; }
+.nav-btn:hover{ background: var(--surface-2); }
+.nav-btn.active{ background: linear-gradient(135deg, color-mix(in srgb,var(--primary) 14%, var(--surface-2)), color-mix(in srgb,var(--accent) 14%, var(--surface-2))); color: var(--text); }
+.nav-btn i{ font-size:18px; }
+.main{ overflow:auto; padding: 18px 24px; }
+
+@media (max-width: 820px){
+  .body{ grid-template-columns: 1fr; }
+  .side{ display:none; }
+  .body.show-side .side{ display:flex; position:absolute; inset:0; z-index:40; width:80%; max-width: 280px; box-shadow: var(--shadow-lg); }
+}
+
+.section-title{ font-size: 22px; font-weight: 800; margin-bottom: 14px; display:flex; align-items:center; gap:10px; }
+.card{ background: var(--surface); border:1px solid var(--border); border-radius: var(--radius); padding: 18px; margin-bottom: 16px; box-shadow: var(--shadow-sm); }
+.card .card-title{ font-weight: 700; margin-bottom: 8px; display:flex; align-items:center; gap:8px; }
+
+/* Stats */
+.stats{ display:grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: 12px; margin-bottom: 18px; }
+.stat{
+  background: var(--surface); border:1px solid var(--border);
+  border-radius: var(--radius); padding: 16px; position:relative; overflow:hidden;
+}
+.stat::before{
+  content:''; position:absolute; right:-30px; top:-30px; width:120px; height:120px; border-radius:50%;
+  background: linear-gradient(135deg, color-mix(in srgb,var(--primary) 20%, transparent), color-mix(in srgb,var(--accent) 20%, transparent));
+}
+.stat .ic{ font-size: 22px; color: var(--primary); position: relative; }
+.stat .v{ font-size: 28px; font-weight: 800; position:relative; }
+.stat .l{ font-size: 12px; color: var(--text-mute); position:relative; }
+
+/* Tables */
+.tbl{ width:100%; border-collapse: collapse; font-size: 13px; }
+.tbl th, .tbl td{ text-align:left; padding: 10px 8px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.tbl th{ color: var(--text-soft); font-weight:600; font-size:12px; }
+.tbl tr:hover td{ background: var(--surface-2); }
+
+.avatar{ width:38px; height:38px; border-radius:50%; background: var(--surface-2); display:flex; align-items:center; justify-content:center; font-weight:700; color: var(--primary-2); flex-shrink:0; overflow:hidden; border:1px solid var(--border); }
+.avatar img{ width:100%; height:100%; object-fit:cover; }
+.avatar.sm{ width:32px; height:32px; font-size:13px; }
+.avatar.lg{ width:96px; height:96px; font-size:34px; }
+
+/* Risk badges */
+.risk{ display:inline-flex; align-items:center; gap:4px; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight:700; }
+.risk.low   { background:#dcfce7; color:#166534; }
+.risk.med   { background:#fef3c7; color:#854d0e; }
+.risk.high  { background:#fee2e2; color:#991b1b; }
+.risk.crit  { background:#1f2937; color:#fff; }
+[data-theme="dark"] .risk.low  { background:#0f3a23; color:#86efac;}
+[data-theme="dark"] .risk.med  { background:#3b2710; color:#fcd34d;}
+[data-theme="dark"] .risk.high { background:#3b1414; color:#fecaca;}
+
+/* AI panel */
+.ai-panel{
+  background: linear-gradient(135deg, color-mix(in srgb, var(--primary) 12%, var(--surface)),
+                                       color-mix(in srgb, var(--accent) 12%, var(--surface)));
+  border:1px solid var(--border);
+  border-radius: var(--radius); padding: 14px;
+}
+
+/* Search bar */
+.search{ position:relative; flex:1; max-width: 360px; }
+.search input{ width:100%; padding: 9px 12px 9px 36px; border-radius: 999px; background: var(--surface-2); border:1px solid var(--border); outline:none; font-size: 13px; }
+.search i{ position:absolute; left:12px; top:50%; transform:translateY(-50%); color: var(--text-mute); }
+
+/* Items list */
+.item{ display:flex; align-items:center; gap:10px; padding: 10px; border:1px solid var(--border); border-radius: 12px; }
+.item + .item{ margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <div class="auth-wrap"><div class="spinner lg"></div></div>
+</div>
+
+<div id="modal-root"></div>
+<div id="toasts"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import {
+  getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut
+} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+import {
+  getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc,
+  collection, query, where, orderBy, limit, onSnapshot, addDoc,
+  serverTimestamp, getDocs, Timestamp
+} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+/* ===== Firebase config ===== */
+const firebaseConfig = {
+  apiKey: "AIzaSyDOjmJqU4YuahJLFmlZ5yEhjCctvq_ToCw",
+  authDomain: "thetakingchatsosal.firebaseapp.com",
+  projectId: "thetakingchatsosal",
+  storageBucket: "thetakingchatsosal.firebasestorage.app",
+  messagingSenderId: "1091952874901",
+  appId: "1:1091952874901:web:acd7cbf3fa44cb0045529c",
+  measurementId: "G-F71XY6M8Q9",
+  databaseURL: "https://thetakingchatsosal-default-rtdb.firebaseio.com"
+};
+const ADMIN_EMAIL = "nafizofe8@gmail.com";
+
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+
+const $  = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+const el = (tag, props={}, ...children) => {
+  const e = document.createElement(tag);
+  for(const [k,v] of Object.entries(props||{})){
+    if(k==='class') e.className = v;
+    else if(k==='style' && typeof v==='object') Object.assign(e.style,v);
+    else if(k.startsWith('on') && typeof v==='function') e.addEventListener(k.slice(2).toLowerCase(),v);
+    else if(k==='html') e.innerHTML = v;
+    else if(k==='text') e.textContent = v;
+    else if(v===true) e.setAttribute(k,'');
+    else if(v!==false && v!==null && v!==undefined) e.setAttribute(k, v);
+  }
+  for(const c of children.flat()){
+    if(c==null||c===false) continue;
+    e.appendChild(typeof c==='string' ? document.createTextNode(c) : c);
+  }
+  return e;
+};
+const initials = n => (n||'').trim().split(/\s+/).map(p=>p[0]).slice(0,2).join('').toUpperCase() || '?';
+const fmt = t => { if(!t) return '—'; const d = t.toDate?t.toDate():new Date(t); return d.toLocaleString(); };
+function avatarOf(name='', url='', size=''){
+  const a = el('div',{class:`avatar ${size}`});
+  if(url) a.appendChild(el('img',{src:url, alt:name, onerror: e=>{e.target.remove(); a.textContent = initials(name);}}));
+  else a.textContent = initials(name);
+  return a;
+}
+
+function toast(msg, type='info', ms=2800){
+  const t = el('div',{class:`toast ${type}`}, el('i',{class: type==='success'?'ri-checkbox-circle-fill':type==='error'?'ri-error-warning-fill':'ri-information-fill'}), el('span',{text: msg}));
+  $('#toasts').appendChild(t);
+  setTimeout(()=>{ t.style.opacity='0'; t.style.transform='translateX(20px)'; setTimeout(()=>t.remove(),250); }, ms);
+}
+function modal({title, body, foot}){
+  const root = $('#modal-root');
+  const back = el('div',{class:'modal-back', onclick:(e)=>{ if(e.target===back){ close(); } }});
+  const m = el('div',{class:'modal'});
+  const h = el('div',{class:'modal-header'}, el('div',{class:'bold', text: title || ''}),
+    el('button',{class:'btn btn-ghost btn-icon', onclick:close}, el('i',{class:'ri-close-line'})));
+  const b = el('div',{class:'modal-body'});
+  if(typeof body==='string') b.innerHTML = body; else if(body) b.appendChild(body);
+  m.appendChild(h); m.appendChild(b);
+  if(foot){ const f = el('div',{style:{padding:'14px 20px', borderTop:'1px solid var(--border)', display:'flex', gap:'8px', justifyContent:'flex-end'}}); (Array.isArray(foot)?foot:[foot]).forEach(x=>f.appendChild(x)); m.appendChild(f); }
+  back.appendChild(m); root.appendChild(back);
+  function close(){ back.remove(); }
+  return { close, body: b };
+}
+function confirmDialog(message, ok='ঠিক আছে'){
+  return new Promise(res=>{
+    const m = modal({title:'নিশ্চিত করুন', body: el('div',{text:message}), foot:[
+      el('button',{class:'btn', onclick:()=>{ m.close(); res(false); }, text:'বাতিল'}),
+      el('button',{class:'btn btn-primary', onclick:()=>{ m.close(); res(true); }, text:ok})
+    ]});
+  });
+}
+
+const state = {
+  user: null,
+  appConfig: { name:'Bondhu' },
+  section: 'overview',
+  arg: null,
+  unsub: []
+};
+
+document.documentElement.dataset.theme = localStorage.getItem('admin_theme') || 'light';
+
+function clearUnsubs(){ state.unsub.forEach(u=>{try{u();}catch{}}); state.unsub=[]; }
+
+/* ===== Routing ===== */
+function navigate(hash){ if(location.hash !== hash) location.hash = hash; else handleRoute(); }
+function parseRoute(){
+  const h = location.hash.replace(/^#/,'') || '';
+  const [section, arg] = h.split('/').filter(Boolean);
+  return { section: section || 'overview', arg };
+}
+function handleRoute(){
+  if(!state.user){ renderAuthGate(state.authError||''); return; }
+  const { section, arg } = parseRoute();
+  state.section = section; state.arg = arg;
+  renderShell();
+  switch(section){
+    case 'users':     return adminUsers();
+    case 'analyses':  return adminAnalyses();
+    case 'analyze':   return adminUserAnalyze(arg);
+    case 'focus':     return adminFocus();
+    case 'ai':        return adminAI();
+    case 'questions': return adminQuestions();
+    case 'posts':     return adminPosts();
+    case 'settings':  return adminSettings();
+    default:          return adminOverview();
+  }
+}
+window.addEventListener('hashchange', handleRoute);
+
+/* ===== Auth ===== */
+onAuthStateChanged(auth, u => {
+  state.user = u;
+  if(u && u.email !== ADMIN_EMAIL){
+    // Keep the error visible across the upcoming null-user callback
+    state.authError = 'আপনি এডমিন নন। সঠিক admin অ্যাকাউন্ট দিয়ে লগইন করুন।';
+    signOut(auth).catch(()=>{});
+    state.user = null;
+    renderAuthGate(state.authError);
+    return;
+  }
+  if(u){
+    state.authError = '';
+    // load app config — clear any previously attached listeners first
+    // to avoid duplicates when onAuthStateChanged fires multiple times
+    // (initial load, token refresh, etc.)
+    clearUnsubs();
+    listenAppConfig();
+  } else {
+    clearUnsubs();
+  }
+  handleRoute();
+});
+
+function listenAppConfig(){
+  const un = onSnapshot(doc(db,'config','app'), s=>{
+    if(s.exists()){
+      Object.assign(state.appConfig, s.data());
+      $$('.brand-name').forEach(n=> n.textContent = (state.appConfig.name||'Bondhu') + ' Admin');
+      document.title = (state.appConfig.name||'Bondhu') + ' • Admin';
+    }
+  });
+  state.unsub.push(un);
+}
+
+function renderAuthGate(err=''){
+  const root = $('#app'); root.innerHTML='';
+  const wrap = el('div',{class:'auth-wrap'});
+  const card = el('div',{class:'auth-card'});
+  card.append(
+    el('div',{class:'shield-mark'}, el('i',{class:'ri-shield-star-fill'})),
+    el('div',{class:'auth-title brand-name', text:'Bondhu Admin'}),
+    el('div',{class:'auth-sub', text:'এডমিন অ্যাকাউন্ট দিয়ে লগইন করুন'})
+  );
+  const errBox = el('div',{class:'small', style:{color:'var(--danger)', minHeight:'18px', textAlign:'center'}, text: err});
+  const f = (l,n,t='text')=> el('div',{class:'field'}, el('label',{text:l}), el('input',{class:'input', name:n, type:t}));
+  const fEmail = f('ইমেইল','email','email');
+  const fPass  = f('পাসওয়ার্ড','password','password');
+  const submit = el('button',{class:'btn btn-primary btn-block', text:'লগইন', style:{marginTop:'12px'}});
+  submit.onclick = async ()=>{
+    errBox.textContent = '';
+    submit.disabled = true; submit.innerHTML = '<span class="spinner"></span>';
+    try{
+      const email = $('input[name=email]', card).value.trim();
+      const pass  = $('input[name=password]', card).value;
+      if(email !== ADMIN_EMAIL){ errBox.textContent = 'এই ইমেইল admin নয়'; return; }
+      await signInWithEmailAndPassword(auth, email, pass);
+    }catch(e){
+      errBox.textContent = friendlyAuth(e);
+    }finally{
+      submit.disabled = false; submit.textContent = 'লগইন';
+    }
+  };
+  card.append(errBox, fEmail, el('div',{style:{height:'10px'}}), fPass, submit,
+    el('div',{class:'small muted', style:{textAlign:'center', marginTop:'14px'}},
+      el('a',{href:'index.html', text:'← User app এ যান'})
+    ));
+  wrap.appendChild(card); root.appendChild(wrap);
+}
+function friendlyAuth(e){
+  const c = e?.code || '';
+  if(c.includes('invalid-credential') || c.includes('wrong-password') || c.includes('user-not-found')) return 'ইমেইল বা পাসওয়ার্ড ভুল';
+  if(c.includes('invalid-email')) return 'ইমেইল ফরম্যাট ঠিক নয়';
+  return e?.message || 'লগইন ব্যর্থ';
+}
+
+/* ===== Shell ===== */
+function renderShell(){
+  const root = $('#app'); root.innerHTML='';
+  const shell = el('div',{class:'shell'});
+  const top = el('div',{class:'topbar'},
+    el('button',{class:'btn btn-ghost btn-icon', onclick:()=> $('.body').classList.toggle('show-side')}, el('i',{class:'ri-menu-line'})),
+    el('div',{class:'brand'},
+      el('div',{class:'brand-mark'}, el('i',{class:'ri-shield-star-fill'})),
+      el('div',{class:'col'},
+        el('div',{class:'bold brand-name', text:(state.appConfig.name||'Bondhu')+' Admin'}),
+        el('div',{class:'small muted', text: state.user?.email||''})
+      )
+    ),
+    el('div',{class:'grow'}),
+    el('button',{class:'btn btn-ghost btn-icon', title:'থিম', onclick:()=>{
+      const t = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+      document.documentElement.dataset.theme = t; localStorage.setItem('admin_theme', t);
+    }}, el('i',{class: document.documentElement.dataset.theme==='dark'?'ri-sun-line':'ri-moon-line'})),
+    el('a',{class:'btn', href:'index.html'}, el('i',{class:'ri-external-link-line'}), el('span',{text:'User App'})),
+    el('button',{class:'btn btn-danger', onclick: async()=>{
+      if(!await confirmDialog('লগআউট করবেন?','লগআউট')) return;
+      await signOut(auth);
+    }}, el('i',{class:'ri-logout-box-line'}), el('span',{text:'লগআউট'}))
+  );
+  const body = el('div',{class:'body'});
+  const side = el('div',{class:'side'});
+  const main = el('div',{class:'main', id:'admin-main'});
+  body.append(side, main);
+
+  const NAV = [
+    ['overview','ওভারভিউ','ri-dashboard-line'],
+    ['users','ইউজার তালিকা','ri-team-line'],
+    ['analyses','মেন্টাল হেলথ','ri-mental-health-line'],
+    ['focus','ফোকাস মোড','ri-focus-2-line'],
+    ['ai','AI APIs','ri-robot-2-line'],
+    ['questions','প্রশ্ন সাজেশন','ri-questionnaire-line'],
+    ['posts','রিপোর্ট ও পোস্ট','ri-flag-line'],
+    ['settings','সিস্টেম সেটিংস','ri-settings-3-line'],
+  ];
+  NAV.forEach(([k,l,ic])=>{
+    side.append(el('button',{class:'nav-btn '+(state.section===k||(k==='users'&&state.section==='analyze')?'active':''),
+      onclick:()=>{ navigate('#'+k); $('.body').classList.remove('show-side'); }
+    }, el('i',{class:ic}), el('span',{text:l})));
+  });
+  shell.append(top, body); root.appendChild(shell);
+}
+function setMain(){ return $('#admin-main'); }
+
+/* ===== Overview ===== */
+async function adminOverview(){
+  const main = setMain(); main.innerHTML='';
+  main.append(el('div',{class:'section-title'}, el('i',{class:'ri-dashboard-line'}), el('span',{text:'ওভারভিউ'})));
+  const stats = el('div',{class:'stats'});
+  main.append(stats);
+  stats.innerHTML = '<div class="stat"><div class="row gap-2"><span class="spinner"></span> লোড...</div></div>';
+  try{
+    const [u,p,r,a,g] = await Promise.all([
+      getDocs(collection(db,'users')),
+      getDocs(collection(db,'posts')),
+      getDocs(collection(db,'reports')),
+      getDocs(collection(db,'analyses')),
+      getDocs(collection(db,'groups')),
+    ]);
+    stats.innerHTML='';
+    [
+      ['মোট ইউজার', u.size, 'ri-team-line'],
+      ['মোট পোস্ট', p.size, 'ri-image-2-line'],
+      ['মোট গ্রুপ', g.size, 'ri-group-line'],
+      ['রিপোর্ট', r.size, 'ri-flag-line'],
+      ['এনালাইসিস', a.size, 'ri-mental-health-line'],
+    ].forEach(([l,v,ic])=>{
+      stats.append(el('div',{class:'stat'},
+        el('div',{class:'row between'}, el('i',{class:'ic '+ic}), el('span',{class:'small muted', text:'মোট'})),
+        el('div',{class:'v', text:String(v)}),
+        el('div',{class:'l', text:l})
+      ));
+    });
+
+    // Recent users
+    main.append(el('div',{class:'card'},
+      el('div',{class:'card-title'}, el('i',{class:'ri-user-add-line'}), el('span',{text:'সাম্প্রতিক যোগ দেওয়া ইউজার'})),
+      el('div',{class:'col gap-2'},
+        ...u.docs.slice(-5).reverse().map(d=>{
+          const v = d.data();
+          return el('div',{class:'item'},
+            avatarOf(v.name, v.photoURL,'sm'),
+            el('div',{class:'col grow'},
+              el('div',{class:'bold', text: v.name||'—'}),
+              el('div',{class:'small muted', text:'@'+(v.username||'?')+' · '+(v.email||'')})
+            ),
+            el('button',{class:'btn btn-sm', onclick:()=>navigate('#analyze/'+d.id), text:'এনালাইজ'})
+          );
+        })
+      )
+    ));
+
+    // Quick links
+    main.append(el('div',{class:'card'},
+      el('div',{class:'card-title'}, el('i',{class:'ri-flashlight-line'}), el('span',{text:'দ্রুত পদক্ষেপ'})),
+      el('div',{class:'row gap-2', style:{flexWrap:'wrap'}},
+        el('button',{class:'btn btn-primary', onclick:()=>navigate('#focus')}, el('i',{class:'ri-focus-2-line'}), el('span',{text:'ফোকাস মোড সেট'})),
+        el('button',{class:'btn', onclick:()=>navigate('#ai')}, el('i',{class:'ri-robot-2-line'}), el('span',{text:'AI Key যোগ'})),
+        el('button',{class:'btn', onclick:()=>navigate('#users')}, el('i',{class:'ri-team-line'}), el('span',{text:'ইউজার তালিকা'})),
+        el('button',{class:'btn', onclick:()=>navigate('#posts')}, el('i',{class:'ri-flag-line'}), el('span',{text:'রিপোর্ট দেখুন'}))
+      )
+    ));
+
+  }catch(e){ main.append(el('div',{class:'card', text:'ডেটা লোড ব্যর্থ: '+(e.message||e)})); }
+}
+
+/* ===== Users ===== */
+async function adminUsers(){
+  const main = setMain(); main.innerHTML='';
+  main.append(el('div',{class:'section-title'}, el('i',{class:'ri-team-line'}), el('span',{text:'ইউজার তালিকা'})));
+  const card = el('div',{class:'card'});
+  const search = el('div',{class:'search'}, el('i',{class:'ri-search-line'}), el('input',{placeholder:'নাম/ইউজারনেম/ইমেইল...'}));
+  card.append(search);
+  const tbody = el('tbody',{}, el('tr',{},el('td',{colSpan:6, text:'লোড...'})));
+  card.append(el('div',{style:{overflowX:'auto', marginTop:'10px'}},
+    el('table',{class:'tbl'},
+      el('thead',{}, el('tr',{}, ...['নাম','ইউজারনেম','ইমেইল','ক্লাস','রোল','একশন'].map(h=>el('th',{text:h})))),
+      tbody
+    )
+  ));
+  main.append(card);
+  const snap = await getDocs(collection(db,'users'));
+  const users = snap.docs.map(d=>({id:d.id, ...d.data()}));
+  function paint(f=''){
+    tbody.innerHTML='';
+    const list = users.filter(u=> !f || (u.name||'').toLowerCase().includes(f) || (u.username||'').toLowerCase().includes(f) || (u.email||'').toLowerCase().includes(f));
+    if(!list.length){ tbody.appendChild(el('tr',{},el('td',{colSpan:6, class:'muted', style:{padding:'20px', textAlign:'center'}, text:'কেউ পাওয়া যায়নি'}))); return; }
+    list.forEach(u=>{
+      tbody.appendChild(el('tr',{},
+        el('td',{}, el('div',{class:'row gap-2'}, avatarOf(u.name, u.photoURL,'sm'), el('div',{},
+          el('div',{class:'bold', text:u.name||''}),
+          u.banned? el('span',{class:'risk high', text:'BANNED'}) : null
+        ))),
+        el('td',{text:'@'+(u.username||'')}),
+        el('td',{class:'small', text:u.email||''}),
+        el('td',{text:u.klass||'—'}),
+        el('td',{text:u.rollNumber||'—'}),
+        el('td',{}, el('div',{class:'row gap-2'},
+          el('button',{class:'btn btn-sm', onclick:()=>navigate('#analyze/'+u.id), text:'এনালাইজ'}),
+          u.banned
+            ? el('button',{class:'btn btn-sm', onclick: async()=>{ await updateDoc(doc(db,'users',u.id),{banned:false}); toast('আনব্যান','success'); adminUsers(); }, text:'আনব্যান'})
+            : el('button',{class:'btn btn-sm btn-danger', onclick: async()=>{
+                if(!await confirmDialog('ব্যান করবেন?','ব্যান')) return;
+                await updateDoc(doc(db,'users', u.id),{banned:true}); toast('ব্যান','success'); adminUsers();
+              }, text:'ব্যান'})
+        ))
+      ));
+    });
+  }
+  $('input', search).addEventListener('input', e=> paint(e.target.value.trim().toLowerCase()));
+  paint();
+}
+
+/* ===== Analyses list ===== */
+async function adminAnalyses(){
+  const main = setMain(); main.innerHTML='';
+  main.append(el('div',{class:'section-title'}, el('i',{class:'ri-mental-health-line'}), el('span',{text:'মেন্টাল হেলথ এনালাইসিস'})));
+  const card = el('div',{class:'card'});
+  card.append(el('div',{class:'small muted', style:{marginBottom:'10px'}, text:'উচ্চতর ঝুঁকি (crit/high) আগে দেখানো হবে।'}));
+  const list = el('div',{class:'col gap-2'});
+  card.append(list); main.append(card);
+
+  const snap = await getDocs(collection(db,'analyses'));
+  const items = snap.docs.map(d=>({id:d.id,...d.data()}))
+    .sort((a,b)=>{ const o={crit:0,high:1,med:2,low:3}; return (o[a.risk]??9)-(o[b.risk]??9) || ((b.generatedAt?.toMillis?.()||0) - (a.generatedAt?.toMillis?.()||0)); });
+  if(!items.length){ list.append(el('div',{class:'small muted', text:'এখনো কোনো এনালাইসিস নেই — ইউজার তালিকা থেকে চালান'})); return; }
+  for(const it of items){
+    const us = await getDoc(doc(db,'users', it.id));
+    const u = us.exists()? us.data() : {name:'?', username:'?'};
+    list.append(el('div',{class:'item', style:{cursor:'pointer'}, onclick:()=>navigate('#analyze/'+it.id)},
+      avatarOf(u.name, u.photoURL,'sm'),
+      el('div',{class:'col grow', style:{minWidth:0}},
+        el('div',{class:'bold', text:u.name}),
+        el('div',{class:'small muted truncate', text: it.summary?.slice(0,140)||''})
+      ),
+      el('div',{class:'col', style:{alignItems:'flex-end'}},
+        el('span',{class:'risk '+(it.risk||'low'), text:(it.risk||'low').toUpperCase()}),
+        el('div',{class:'tiny muted', text: fmt(it.generatedAt)})
+      )
+    ));
+  }
+}
+
+/* ===== Per-user analyze ===== */
+const DEFAULT_MENTAL_HEALTH_PROMPT = `তুমি একজন স্কুলের জন্য তৈরি করা মেন্টাল হেলথ ও আচরণ এনালাইসিস AI। তোমার কাজ একজন স্টুডেন্ট ইউজারের শেষ ৭ দিনের চ্যাটিং, পোস্ট, এবং স্টোরির ডেটা পড়ে তার মানসিক অবস্থা মূল্যায়ন করা।
+লক্ষ্য: শিক্ষাপ্রতিষ্ঠান যেন আগেই সতর্ক হতে পারে — বিশেষ করে আত্মহত্যার ঝুঁকি, বুলিং, বিষণ্ণতা, পড়ালেখায় চাপ, পারিবারিক সমস্যা, রাগ/সহিংসতা।
+আউটপুট অবশ্যই **শুধুমাত্র valid JSON** হবে, কোনো ব্যাখ্যা নয়। JSON schema:
+{
+  "mentalState": "এক বাক্যে বর্তমান মানসিক অবস্থার সারসংক্ষেপ (বাংলায়)",
+  "risk": "low|med|high|crit",
+  "summary": "৩-৫ লাইনের সারসংক্ষেপ (বাংলায়)",
+  "risks": ["সুনির্দিষ্ট ঝুঁকির বুলেট লিস্ট (বাংলায়, ৩-৭ টি)"],
+  "predictions": ["১০টি সম্ভাব্য ভবিষ্যৎ মুভমেন্ট/পদক্ষেপের তালিকা — শিক্ষার্থী আগামী দিনগুলোতে কী করতে পারে; প্রতিটি ছোট বাক্যে"],
+  "recommendations": "শিক্ষক/অভিভাবকের জন্য কর্মপরিকল্পনা ৩-৫ বাক্যে (বাংলায়)"
+}
+নিয়ম:
+- কখনো মূল ডেটা হুবহু কপি করবে না।
+- প্রমাণহীন গুরুতর অভিযোগ করবে না; ইঙ্গিত থাকলে "high"/"crit" দাও কিন্তু কারণ summary তে স্পষ্ট কর।
+- ভাষা: বাংলা।`;
+
+async function adminUserAnalyze(uid){
+  const main = setMain(); main.innerHTML='';
+  if(!uid){ main.append(el('div',{class:'card', text:'ইউজার নির্দিষ্ট নয়'})); return; }
+  const us = await getDoc(doc(db,'users', uid));
+  if(!us.exists()){ main.append(el('div',{class:'card', text:'ইউজার পাওয়া যায়নি'})); return; }
+  const u = us.data();
+
+  main.append(el('div',{class:'card'},
+    el('div',{class:'row gap-3'},
+      avatarOf(u.name, u.photoURL,'lg'),
+      el('div',{class:'col grow'},
+        el('div',{class:'bold', style:{fontSize:'20px'}, text:u.name}),
+        el('div',{class:'small muted', text:'@'+u.username+' · '+(u.email||'')}),
+        el('div',{class:'small', text:`ক্লাস: ${u.klass||'—'} · পজিশন: ${u.position||'—'} · রোল: ${u.rollNumber||'—'} · আইডি: ${u.idNumber||'—'}`})
+      ),
+      el('div',{class:'col gap-2'},
+        el('button',{class:'btn btn-primary', onclick:run}, el('i',{class:'ri-flask-line'}), el('span',{text:'এনালাইসিস চালান'})),
+        el('button',{class:'btn', onclick:()=>navigate('#users'), text:'← ইউজার তালিকায় ফেরত'})
+      )
+    )
+  ));
+
+  // Activity counts
+  const counts = el('div',{class:'stats', style:{marginTop:'4px'}});
+  main.append(counts);
+  counts.innerHTML='<div class="stat">লোড...</div>';
+  loadActivity();
+
+  // Existing analysis
+  const out = el('div',{class:'card'});
+  out.append(el('div',{class:'card-title'}, el('i',{class:'ri-robot-2-line'}), el('span',{text:'AI আউটপুট'})));
+  const resBox = el('div',{class:'col gap-2', text:'ক্লিক করে এনালাইসিস চালান।'});
+  out.append(resBox); main.append(out);
+
+  // Load existing analysis if any
+  try{
+    const ex = await getDoc(doc(db,'analyses', uid));
+    if(ex.exists()) paintAnalysis(resBox, ex.data(), true);
+  }catch{}
+
+  async function loadActivity(){
+    const since = Date.now() - 7*24*3600*1000;
+    const ps = await getDocs(query(collection(db,'posts'), where('uid','==', uid)));
+    const ss = await getDocs(query(collection(db,'stories'), where('uid','==', uid)));
+    const recPosts = ps.docs.filter(d=> (d.data().createdAt?.toMillis?.()||0)>=since).length;
+    counts.innerHTML='';
+    [
+      ['৭ দিনে পোস্ট', recPosts, 'ri-image-2-line'],
+      ['মোট পোস্ট', ps.size, 'ri-stack-line'],
+      ['মোট স্টোরি', ss.size, 'ri-history-line'],
+      ['যোগ দিয়েছে', fmt(u.createdAt), 'ri-user-add-line', true],
+    ].forEach(([l,v,ic, isText])=>{
+      counts.append(el('div',{class:'stat'},
+        el('div',{class:'row between'}, el('i',{class:'ic '+ic})),
+        el('div',{class: isText?'small bold':'v', text:String(v)}),
+        el('div',{class:'l', text:l})
+      ));
+    });
+  }
+
+  async function run(){
+    resBox.innerHTML=''; resBox.append(el('div',{class:'row gap-2'}, el('span',{class:'spinner'}), el('span',{text:'AI key লোড হচ্ছে...'})));
+    const keys = await getDocs(collection(db,'aiKeys'));
+    const all = keys.docs.map(d=>({id:d.id,...d.data()}));
+    const active = all.find(k=>k.active && (k.usage==='analysis'||!k.usage)) || all.find(k=>k.active);
+    if(!active){ resBox.innerHTML=''; resBox.append(el('div',{class:'small', style:{color:'var(--danger)'}, text:'কোনো সক্রিয় AI key নেই — AI APIs সেকশনে যোগ করুন'})); return; }
+    const cfg = await getDoc(doc(db,'config','aiPrompts'));
+    const sysPrompt = (cfg.exists() && cfg.data().mentalHealth) || DEFAULT_MENTAL_HEALTH_PROMPT;
+    resBox.innerHTML=''; resBox.append(el('div',{class:'row gap-2'}, el('span',{class:'spinner'}), el('span',{text:'৭ দিনের চ্যাট/পোস্ট/স্টোরি সংগ্রহ করছে...'})));
+    const data = await collectUserData(uid, 7);
+    const userBlock = `ইউজার তথ্য:\nনাম: ${u.name}\nক্লাস: ${u.klass||'—'}\nপজিশন: ${u.position||'—'}\nরোল: ${u.rollNumber||'—'}\n\nপোস্ট (${data.posts.length}):\n${data.posts.map(p=>`- ${p.caption||'(ছবি)'}`).join('\n')||'(কিছু নেই)'}\n\nস্টোরি (${data.stories.length}):\n${data.stories.map(s=>`- ${s.text||'(মিডিয়া)'}`).join('\n')||'(কিছু নেই)'}\n\nচ্যাট মেসেজ (${data.messages.length}):\n${data.messages.slice(0,250).map(m=>`- ${m.text}`).join('\n')||'(কিছু নেই)'}`;
+    resBox.innerHTML=''; resBox.append(el('div',{class:'row gap-2'}, el('span',{class:'spinner'}), el('span',{text:`${active.provider} এ পাঠাচ্ছে...`})));
+    try{
+      const json = await callAI(active, sysPrompt, userBlock);
+      const parsed = safeParseJSON(json) || { summary: json, risk:'low', risks:[], predictions:[], mentalState:'অনিশ্চিত' };
+      await setDoc(doc(db,'analyses', uid), {
+        ...parsed, generatedAt: serverTimestamp(),
+        provider: active.provider, model: active.model||'',
+        rawCounts: { posts: data.posts.length, stories: data.stories.length, messages: data.messages.length }
+      });
+      paintAnalysis(resBox, parsed, false);
+      toast('সম্পন্ন','success');
+    }catch(e){
+      resBox.innerHTML=''; resBox.append(el('div',{class:'small', style:{color:'var(--danger)', whiteSpace:'pre-wrap'}, text:'AI কল ব্যর্থ:\n'+(e.message||e)}));
+    }
+  }
+}
+
+function paintAnalysis(box, a, isOld){
+  box.innerHTML='';
+  if(isOld) box.append(el('div',{class:'small muted', text:'(সর্বশেষ সংরক্ষিত এনালাইসিস)'}));
+  box.append(
+    el('div',{class:'row gap-2'},
+      el('span',{class:'risk '+(a.risk||'low'), text:(a.risk||'low').toUpperCase()}),
+      el('div',{class:'bold', text:'মানসিক অবস্থা: '+(a.mentalState||'—')})
+    ),
+    el('div',{class:'small soft', style:{marginTop:'6px', whiteSpace:'pre-wrap'}, text:a.summary||''}),
+    a.risks?.length ? el('div',{},
+      el('div',{class:'bold', style:{marginTop:'12px'}, text:'সম্ভাব্য ঝুঁকি'}),
+      el('ul',{}, ...(a.risks||[]).map(r=>el('li',{text:r})))
+    ) : null,
+    a.predictions?.length ? el('div',{},
+      el('div',{class:'bold', style:{marginTop:'8px'}, text:'১০টি ভবিষ্যৎ মুভমেন্টের পূর্বাভাস'}),
+      el('ol',{}, ...(a.predictions||[]).map(p=>el('li',{text:p})))
+    ) : null,
+    a.recommendations ? el('div',{class:'ai-panel', style:{marginTop:'8px'}},
+      el('div',{class:'bold', text:'সুপারিশ (শিক্ষক/অভিভাবকের জন্য)'}),
+      el('div',{class:'small soft', style:{whiteSpace:'pre-wrap'}, text:a.recommendations})
+    ) : null
+  );
+}
+
+async function collectUserData(uid, days=7){
+  const since = Date.now() - days*24*3600*1000;
+  const out = { posts:[], stories:[], messages:[] };
+  const ps = await getDocs(query(collection(db,'posts'), where('uid','==',uid)));
+  out.posts = ps.docs.map(d=>d.data()).filter(p => (p.createdAt?.toMillis?.()||0) >= since);
+  const ss = await getDocs(query(collection(db,'stories'), where('uid','==',uid)));
+  out.stories = ss.docs.map(d=>d.data()).filter(s => (s.createdAt?.toMillis?.()||0) >= since);
+  const chats = await getDocs(query(collection(db,'chats'), where('participants','array-contains', uid)));
+  for(const c of chats.docs){
+    try{
+      const ms = await getDocs(query(collection(db,'chats',c.id,'messages'), where('from','==',uid)));
+      ms.docs.forEach(m=>{ const v=m.data(); if((v.createdAt?.toMillis?.()||0)>=since && v.text) out.messages.push({chat:c.id, text:v.text}); });
+    }catch{}
+  }
+  const groups = await getDocs(query(collection(db,'groups'), where('members','array-contains', uid)));
+  for(const g of groups.docs){
+    try{
+      const ms = await getDocs(query(collection(db,'groups',g.id,'messages'), where('from','==',uid)));
+      ms.docs.forEach(m=>{ const v=m.data(); if((v.createdAt?.toMillis?.()||0)>=since && v.text) out.messages.push({group:g.id, text:v.text}); });
+    }catch{}
+  }
+  return out;
+}
+function safeParseJSON(s){
+  if(!s) return null;
+  try{ return JSON.parse(s); }catch{}
+  const m = s.match(/\{[\s\S]*\}/); if(m){ try{ return JSON.parse(m[0]); }catch{} }
+  return null;
+}
+async function callAI(active, sysPrompt, userMsg){
+  const provider = (active.provider||'').toLowerCase();
+  const key = active.apiKey;
+  const model = active.model || (provider==='openai'?'gpt-4o-mini':provider==='groq'?'llama-3.1-70b-versatile':provider==='gemini'?'gemini-1.5-flash':'');
+  if(!key) throw new Error('API key নেই');
+  if(provider==='gemini'){
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(key)}`;
+    const res = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        contents:[{role:'user', parts:[{text: userMsg}]}],
+        systemInstruction:{ parts:[{text: sysPrompt}] },
+        generationConfig:{ temperature:0.4, responseMimeType:'application/json' }
+      })
+    });
+    const j = await res.json();
+    if(!res.ok) throw new Error(j.error?.message||'Gemini error');
+    return j.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  }
+  if(provider==='openai' || provider==='groq' || provider==='openrouter'){
+    const url = provider==='openai' ? 'https://api.openai.com/v1/chat/completions'
+              : provider==='groq'   ? 'https://api.groq.com/openai/v1/chat/completions'
+              : 'https://openrouter.ai/api/v1/chat/completions';
+    const body = { model, messages:[{role:'system', content:sysPrompt},{role:'user', content:userMsg}], temperature:0.4 };
+    if(provider!=='openrouter') body.response_format = { type:'json_object' };
+    const res = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+key}, body: JSON.stringify(body) });
+    const j = await res.json();
+    if(!res.ok) throw new Error(j.error?.message||'AI error');
+    return j.choices?.[0]?.message?.content || '';
+  }
+  if(provider==='anthropic'){
+    const res = await fetch('https://api.anthropic.com/v1/messages',{ method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body: JSON.stringify({ model: model||'claude-3-5-sonnet-latest', max_tokens:2048, system:sysPrompt, messages:[{role:'user', content:userMsg}] })
+    });
+    const j = await res.json();
+    if(!res.ok) throw new Error(j.error?.message||'Anthropic error');
+    return j.content?.[0]?.text || '';
+  }
+  throw new Error('Unsupported provider: '+active.provider);
+}
+
+/* ===== Focus Mode ===== */
+async function adminFocus(){
+  const main = setMain(); main.innerHTML='';
+  main.append(el('div',{class:'section-title'}, el('i',{class:'ri-focus-2-line'}), el('span',{text:'ফোকাস মোড'})));
+  const card = el('div',{class:'card'});
+  const cfg = await getDoc(doc(db,'config','focus'));
+  const v = cfg.exists() ? cfg.data() : { active:false, topic:'', startAt:null, endAt:null, questions:[] };
+
+  // Status badge
+  const now = Date.now();
+  const start = v.startAt?.toDate ? v.startAt.toDate().getTime() : 0;
+  const end   = v.endAt?.toDate ? v.endAt.toDate().getTime() : 0;
+  const isLive = v.active && start<=now && now<=end;
+  card.append(el('div',{class:'row between', style:{marginBottom:'10px'}},
+    el('div',{class:'small muted', text:'বর্তমান অবস্থা'}),
+    el('span',{class:'risk '+(isLive?'high':'low'), text: isLive?'LIVE — সবার জন্য lock':'OFF'})
+  ));
+
+  const active = el('input',{type:'checkbox'}); active.checked = !!v.active;
+  const topic = el('input',{class:'input', placeholder:'টপিক / নির্দেশনা (e.g. পদার্থ বিজ্ঞান অধ্যায় ৩ পড়ো)', value: v.topic||''});
+  const tStart = el('input',{class:'input', type:'datetime-local', value: tsToInput(v.startAt)});
+  const tEnd   = el('input',{class:'input', type:'datetime-local', value: tsToInput(v.endAt)});
+
+  const qBox = el('div',{class:'col gap-2', style:{marginTop:'10px'}});
+  let qs = Array.isArray(v.questions)? v.questions.slice() : [];
+  function paintQ(){
+    qBox.innerHTML='';
+    qBox.append(el('div',{class:'bold', text:'প্রশ্ন তালিকা — সঠিক উত্তর দিলেই unlock'}));
+    if(!qs.length) qBox.append(el('div',{class:'small muted', text:'(কোনো প্রশ্ন যোগ করা হয়নি)'}));
+    qs.forEach((q,i)=>{
+      const qi = el('input',{class:'input', placeholder:'প্রশ্ন', value: q.q||''});
+      const ai = el('input',{class:'input', placeholder:'সঠিক উত্তর', value: q.a||'', style:{maxWidth:'180px'}});
+      qi.addEventListener('input', e=> qs[i].q = e.target.value);
+      ai.addEventListener('input', e=> qs[i].a = e.target.value);
+      qBox.append(el('div',{class:'row gap-2'}, qi, ai,
+        el('button',{class:'btn btn-sm btn-danger', onclick:()=>{ qs.splice(i,1); paintQ(); }}, el('i',{class:'ri-delete-bin-line'}))
+      ));
+    });
+    qBox.append(el('div',{class:'row gap-2'},
+      el('button',{class:'btn', onclick:()=>{ qs.push({q:'',a:''}); paintQ(); }}, el('i',{class:'ri-add-line'}), el('span',{text:'প্রশ্ন যোগ'})),
+      el('button',{class:'btn', onclick:openSuggest}, el('i',{class:'ri-magic-line'}), el('span',{text:'AI সাজেশন থেকে যোগ'}))
+    ));
+  }
+  paintQ();
+
+  function openSuggest(){
+    const m = modal({title:'AI প্রশ্ন সাজেশন'});
+    const subj = el('input',{class:'input', placeholder:'বিষয় (e.g. পদার্থ)'});
+    const chap = el('input',{class:'input', placeholder:'অধ্যায় (e.g. গতি)'});
+    const klass= el('input',{class:'input', placeholder:'ক্লাস (e.g. ৯)'});
+    const out = el('div',{class:'col gap-2'});
+    const btn = el('button',{class:'btn btn-primary btn-block', text:'৫টি প্রশ্ন আনুন'});
+    btn.onclick = async()=>{
+      btn.disabled=true; btn.innerHTML='<span class="spinner"></span>';
+      try{
+        const keys = await getDocs(collection(db,'aiKeys'));
+        const all = keys.docs.map(d=>d.data());
+        const k = all.find(x=>x.usage==='question'&&x.active) || all.find(x=>x.active);
+        if(!k){ toast('AI key দরকার','error'); return; }
+        const json = await callAI(k, 'You generate exactly 5 concise quiz Q&A. Output ONLY JSON: {"questions":[{"q":"...","a":"..."}]}', `Class: ${klass.value}\nSubject: ${subj.value}\nChapter: ${chap.value}`);
+        const parsed = safeParseJSON(json) || {};
+        const arr = parsed.questions || (Array.isArray(parsed)?parsed:[]);
+        out.innerHTML='';
+        if(!arr.length){ out.append(el('div',{class:'small muted', text:'কিছু পাওয়া যায়নি'})); return; }
+        arr.forEach(qq=>{
+          out.append(el('div',{class:'item'},
+            el('div',{class:'col grow'}, el('div',{class:'bold', text:qq.q}), el('div',{class:'small muted', text:'উত্তর: '+qq.a})),
+            el('button',{class:'btn btn-primary btn-icon', onclick:()=>{ qs.push({q:qq.q, a:qq.a}); paintQ(); toast('যোগ হয়েছে','success'); }}, el('i',{class:'ri-add-line'}))
+          ));
+        });
+      }catch(e){ toast(e.message,'error'); }
+      finally{ btn.disabled=false; btn.textContent='৫টি প্রশ্ন আনুন'; }
+    };
+    m.body.append(el('div',{class:'row gap-2'}, subj, chap, klass), btn, out);
+  }
+
+  const save = el('button',{class:'btn btn-primary', text:'সংরক্ষণ', style:{marginTop:'12px'}});
+  save.onclick = async()=>{
+    save.disabled=true; save.innerHTML='<span class="spinner"></span>';
+    try{
+      const data = {
+        active: active.checked, topic: topic.value.trim(),
+        startAt: tStart.value? Timestamp.fromDate(new Date(tStart.value)) : null,
+        endAt:   tEnd.value?   Timestamp.fromDate(new Date(tEnd.value))   : null,
+        questions: qs.filter(q=>q.q && q.a),
+        updatedAt: serverTimestamp()
+      };
+      await setDoc(doc(db,'config','focus'), data, { merge:true });
+      if(data.active){
+        const us = await getDocs(collection(db,'users'));
+        await Promise.all(us.docs.filter(d=>d.data().email!==ADMIN_EMAIL).map(d=> updateDoc(doc(db,'users', d.id),{ pendingQuiz:true })));
+      }
+      toast('সংরক্ষিত','success'); adminFocus();
+    }catch(e){ toast(e.message,'error'); }
+    finally{ save.disabled=false; save.textContent='সংরক্ষণ'; }
+  };
+
+  card.append(
+    el('label',{class:'row gap-2', style:{marginBottom:'8px'}}, active, el('span',{class:'bold', text:'ফোকাস মোড সক্রিয়'})),
+    el('div',{class:'field'}, el('label',{text:'টপিক'}), topic),
+    el('div',{class:'row gap-2'},
+      el('div',{class:'field grow'}, el('label',{text:'শুরু (লোকাল টাইম)'}), tStart),
+      el('div',{class:'field grow'}, el('label',{text:'শেষ (লোকাল টাইম)'}), tEnd)
+    ),
+    qBox, save,
+    el('div',{class:'small muted', style:{marginTop:'10px'}, text:'যখন সক্রিয়: সকল non-admin ইউজার অ্যাপ ব্যবহার করতে পারবে না, একটি timer দেখাবে। শেষে অ্যাপে এলে ২টি random প্রশ্ন → ভুল হলে ১০ মিনিট লক।'})
+  );
+  main.append(card);
+
+  function tsToInput(t){
+    if(!t) return '';
+    const d = t.toDate?t.toDate():new Date(t);
+    const off = d.getTimezoneOffset(); const local = new Date(d.getTime() - off*60000);
+    return local.toISOString().slice(0,16);
+  }
+}
+
+/* ===== AI APIs ===== */
+async function adminAI(){
+  const main = setMain(); main.innerHTML='';
+  main.append(el('div',{class:'section-title'}, el('i',{class:'ri-robot-2-line'}), el('span',{text:'AI APIs'})));
+
+  // Keys card
+  const card = el('div',{class:'card'});
+  const list = el('div',{class:'col gap-2', style:{marginTop:'8px'}});
+  card.append(el('div',{class:'row between'},
+    el('div',{class:'small muted', text:'একসাথে অনেকগুলো API রাখা যাবে। প্রতিটি usage এর জন্য একটাকে active করুন।'}),
+    el('button',{class:'btn btn-primary', onclick: ()=>openAIDialog(null, refresh)}, el('i',{class:'ri-add-line'}), el('span',{text:'নতুন API'}))
+  ), list);
+  main.append(card);
+
+  // Prompts card
+  const promptsCard = el('div',{class:'card'});
+  promptsCard.append(el('div',{class:'card-title'}, el('i',{class:'ri-quill-pen-line'}), el('span',{text:'সিস্টেম প্রম্পট'})));
+  const cfg = await getDoc(doc(db,'config','aiPrompts'));
+  const cfgV = cfg.exists() ? cfg.data() : {};
+  const mh = el('textarea',{class:'textarea', style:{minHeight:'260px', fontFamily:'inherit'}});
+  mh.value = cfgV.mentalHealth || DEFAULT_MENTAL_HEALTH_PROMPT;
+  const reset = el('button',{class:'btn', text:'ডিফল্টে ফেরান', onclick:()=>{ mh.value = DEFAULT_MENTAL_HEALTH_PROMPT; }});
+  const saveP = el('button',{class:'btn btn-primary', text:'প্রম্পট সংরক্ষণ', onclick: async()=>{
+    await setDoc(doc(db,'config','aiPrompts'), { mentalHealth: mh.value }, { merge:true });
+    toast('সংরক্ষিত','success');
+  }});
+  promptsCard.append(
+    el('div',{class:'small muted', style:{marginBottom:'6px'}, text:'মেন্টাল হেলথ এনালাইসিস প্রম্পট। আউটপুট অবশ্যই valid JSON হতে হবে — schema বদলালে ফ্রন্টএন্ড parse অংশ অমিল হতে পারে।'}),
+    mh,
+    el('div',{class:'row gap-2', style:{marginTop:'8px'}}, saveP, reset)
+  );
+  main.append(promptsCard);
+
+  async function refresh(){
+    list.innerHTML = '<div class="small muted">লোড...</div>';
+    const snap = await getDocs(collection(db,'aiKeys'));
+    list.innerHTML='';
+    if(snap.empty){ list.append(el('div',{class:'small muted', text:'কোনো API নেই'})); return; }
+    snap.docs.forEach(d=>{
+      const v = d.data();
+      list.append(el('div',{class:'item'},
+        el('div',{class:'col grow'},
+          el('div',{class:'row gap-2'},
+            el('div',{class:'bold', text:v.provider}),
+            el('span',{class:'risk low', style:{background:'var(--surface-2)', color:'var(--text-soft)'}, text: v.usage||'analysis'}),
+            v.active ? el('span',{class:'risk low', text:'ACTIVE'}) : el('span',{class:'risk med', text:'inactive'})
+          ),
+          el('div',{class:'small muted', text: (v.model||'(default model)') + ' · Key: ••••' + (v.apiKey||'').slice(-6) })
+        ),
+        el('div',{class:'row gap-2'},
+          el('button',{class:'btn btn-sm', onclick: async()=>{
+            const all = await getDocs(collection(db,'aiKeys'));
+            await Promise.all(all.docs.map(x=>{
+              const xv = x.data();
+              if(xv.usage===v.usage) return updateDoc(doc(db,'aiKeys', x.id),{ active: x.id===d.id });
+            }));
+            refresh();
+          }, text:'একটিভ করুন'}),
+          el('button',{class:'btn btn-sm', onclick:()=>openAIDialog({id:d.id,...v}, refresh)}, el('i',{class:'ri-edit-line'})),
+          el('button',{class:'btn btn-sm btn-danger', onclick: async()=>{ if(!await confirmDialog('মুছে ফেলবেন?')) return; await deleteDoc(doc(db,'aiKeys', d.id)); refresh(); }}, el('i',{class:'ri-delete-bin-line'}))
+        )
+      ));
+    });
+  }
+  refresh();
+}
+
+function openAIDialog(existing, onSaved){
+  const m = modal({title: existing? 'API এডিট':'নতুন API'});
+  const provider = el('select',{class:'select'},
+    ...['gemini','openai','groq','anthropic','openrouter'].map(p=> el('option',{value:p, text:p}))
+  );
+  if(existing) provider.value = existing.provider;
+  const model  = el('input',{class:'input', placeholder:'model id (যেমন gemini-1.5-flash)', value: existing?.model||''});
+  const key    = el('input',{class:'input', placeholder:'API Key', value: existing?.apiKey||''});
+  const usage  = el('select',{class:'select'},
+    el('option',{value:'analysis', text:'মেন্টাল এনালাইসিস'}),
+    el('option',{value:'question', text:'প্রশ্ন সাজেশন'}),
+    el('option',{value:'general', text:'সাধারণ'})
+  );
+  if(existing?.usage) usage.value = existing.usage;
+  const active = el('input',{type:'checkbox'}); active.checked = !!existing?.active;
+
+  const help = {
+    gemini: 'https://aistudio.google.com/apikey — Google AI Studio এ গিয়ে free key নিন।',
+    openai: 'https://platform.openai.com/api-keys',
+    groq:   'https://console.groq.com/keys — দ্রুত ও free tier আছে।',
+    anthropic:'https://console.anthropic.com',
+    openrouter:'https://openrouter.ai/keys'
+  };
+  const helpBox = el('div',{class:'small muted', text: help[provider.value]});
+  provider.addEventListener('change', ()=> helpBox.textContent = help[provider.value]||'');
+
+  const save = el('button',{class:'btn btn-primary btn-block', text:'সংরক্ষণ', onclick: async()=>{
+    if(!key.value.trim()){ toast('Key দিন','error'); return; }
+    const data = { provider: provider.value, model: model.value.trim(), apiKey: key.value.trim(), usage: usage.value, active: active.checked, updatedAt: serverTimestamp() };
+    let savedId;
+    if(existing){ await updateDoc(doc(db,'aiKeys', existing.id), data); savedId = existing.id; }
+    else { const ref = await addDoc(collection(db,'aiKeys'), { ...data, createdAt: serverTimestamp() }); savedId = ref.id; }
+    if(active.checked){
+      const all = await getDocs(collection(db,'aiKeys'));
+      await Promise.all(all.docs.map(x=>{
+        const v = x.data();
+        if(v.usage===data.usage && x.id !== savedId) return updateDoc(doc(db,'aiKeys', x.id),{active:false});
+      }));
+    }
+    toast('সংরক্ষিত','success'); m.close(); onSaved && onSaved();
+  }});
+  m.body.append(
+    el('div',{class:'field'}, el('label',{text:'Provider'}), provider, helpBox),
+    el('div',{class:'field'}, el('label',{text:'Model (অপশনাল — খালি রাখলে ডিফল্ট)'}), model),
+    el('div',{class:'field'}, el('label',{text:'API Key'}), key),
+    el('div',{class:'field'}, el('label',{text:'Usage'}), usage),
+    el('label',{class:'row gap-2'}, active, el('span',{text:'Active করুন'})),
+    save
+  );
+}
+
+/* ===== Question suggestion ===== */
+async function adminQuestions(){
+  const main = setMain(); main.innerHTML='';
+  main.append(el('div',{class:'section-title'}, el('i',{class:'ri-questionnaire-line'}), el('span',{text:'প্রশ্ন সাজেশন'})));
+  const card = el('div',{class:'card'});
+  card.append(el('div',{class:'small muted', text:'বিষয়/অধ্যায়/ক্লাস দিয়ে AI থেকে ৫টি প্রশ্ন পান, (+) চাপলে ফোকাস মোডের প্রশ্ন তালিকায় যোগ হবে।'}));
+  const subj = el('input',{class:'input', placeholder:'বিষয় (e.g. পদার্থ)'});
+  const chap = el('input',{class:'input', placeholder:'অধ্যায় (e.g. গতি)'});
+  const klass= el('input',{class:'input', placeholder:'ক্লাস (e.g. ৯)'});
+  const out = el('div',{class:'col gap-2', style:{marginTop:'10px'}});
+  const btn = el('button',{class:'btn btn-primary', text:'৫টি প্রশ্ন আনুন', style:{marginTop:'8px'}});
+  btn.onclick = async()=>{
+    btn.disabled=true; btn.innerHTML='<span class="spinner"></span>';
+    try{
+      const keys = await getDocs(collection(db,'aiKeys'));
+      const all = keys.docs.map(d=>d.data());
+      const k = all.find(x=>x.usage==='question'&&x.active) || all.find(x=>x.active);
+      if(!k){ toast('AI key দরকার','error'); return; }
+      const json = await callAI(k, 'You generate exactly 5 concise quiz Q&A in Bangla if subject sounds Bangla else in English. Output ONLY JSON: {"questions":[{"q":"...","a":"..."}]}', `Class: ${klass.value}\nSubject: ${subj.value}\nChapter: ${chap.value}`);
+      const parsed = safeParseJSON(json) || {};
+      const arr = parsed.questions || (Array.isArray(parsed)?parsed:[]);
+      out.innerHTML='';
+      if(!arr.length){ out.append(el('div',{class:'small muted', text:'কিছু পাওয়া যায়নি — অন্য বিষয় চেষ্টা করুন'})); return; }
+      arr.forEach(qq=>{
+        out.append(el('div',{class:'item'},
+          el('div',{class:'col grow'},
+            el('div',{class:'bold', text:qq.q}),
+            el('div',{class:'small muted', text:'উত্তর: '+qq.a})
+          ),
+          el('button',{class:'btn btn-primary btn-icon', onclick: async()=>{
+            const focus = await getDoc(doc(db,'config','focus'));
+            const v = focus.exists()? focus.data() : { questions:[] };
+            const list = Array.isArray(v.questions)? v.questions : [];
+            list.push({q:qq.q,a:qq.a});
+            await setDoc(doc(db,'config','focus'), { questions: list }, { merge:true });
+            toast('ফোকাস তালিকায় যোগ হয়েছে','success');
+          }}, el('i',{class:'ri-add-line'}))
+        ));
+      });
+    }catch(e){ toast(e.message,'error'); }
+    finally{ btn.disabled=false; btn.textContent='৫টি প্রশ্ন আনুন'; }
+  };
+  card.append(el('div',{class:'row gap-2', style:{marginTop:'8px'}}, subj, chap, klass), btn, out);
+  main.append(card);
+}
+
+/* ===== Posts & Reports ===== */
+async function adminPosts(){
+  const main = setMain(); main.innerHTML='';
+  main.append(el('div',{class:'section-title'}, el('i',{class:'ri-flag-line'}), el('span',{text:'রিপোর্ট ও পোস্ট'})));
+
+  const repCard = el('div',{class:'card'});
+  repCard.append(el('div',{class:'card-title'}, el('i',{class:'ri-flag-line'}), el('span',{text:'রিপোর্টকৃত পোস্ট'})));
+  const repList = el('div',{class:'col gap-2'}, el('div',{class:'small muted', text:'লোড...'}));
+  repCard.append(repList);
+  main.append(repCard);
+
+  const repSnap = await getDocs(collection(db,'reports'));
+  repList.innerHTML='';
+  if(repSnap.empty){ repList.append(el('div',{class:'small muted', text:'কোনো রিপোর্ট নেই'})); }
+  else for(const r of repSnap.docs){
+    const v = r.data();
+    let post = null;
+    try{ const ps = await getDoc(doc(db,'posts', v.postId)); post = ps.exists()? ps.data() : null; }catch{}
+    let reporter = null;
+    try{ const rs = await getDoc(doc(db,'users', v.reportedBy)); reporter = rs.exists()? rs.data() : null; }catch{}
+    repList.append(el('div',{class:'item'},
+      el('div',{class:'col grow'},
+        el('div',{class:'bold', text: post? (post.caption||'(ছবি পোস্ট)') : '(পোস্ট ডিলিটেড)'}),
+        el('div',{class:'small muted', text:'রিপোর্টার: '+(reporter?.name||'—')+' · কারণ: '+(v.reason||'—')+' · '+fmt(v.createdAt)})
+      ),
+      post?.mediaURL? el('img',{src:post.mediaURL, style:{width:'70px', height:'70px', objectFit:'cover', borderRadius:'8px'}}) : null,
+      el('div',{class:'row gap-2'},
+        post? el('button',{class:'btn btn-sm btn-danger', onclick: async()=>{
+          if(!await confirmDialog('পোস্ট মুছে ফেলবেন?','মুছুন')) return;
+          await deleteDoc(doc(db,'posts', v.postId)); await deleteDoc(doc(db,'reports', r.id));
+          toast('মুছে ফেলা হয়েছে','success'); adminPosts();
+        }, text:'পোস্ট মুছুন'}) : null,
+        el('button',{class:'btn btn-sm', onclick: async()=>{ await deleteDoc(doc(db,'reports', r.id)); toast('রিপোর্ট খারিজ','info'); adminPosts(); }, text:'রিপোর্ট খারিজ'})
+      )
+    ));
+  }
+
+  // Recent posts
+  const all = el('div',{class:'card'});
+  all.append(el('div',{class:'card-title'}, el('i',{class:'ri-stack-line'}), el('span',{text:'সাম্প্রতিক পোস্ট'})));
+  const allList = el('div',{class:'col gap-2'}, el('div',{class:'small muted', text:'লোড...'}));
+  all.append(allList); main.append(all);
+
+  const ps = await getDocs(query(collection(db,'posts'), orderBy('createdAt','desc'), limit(20)));
+  allList.innerHTML='';
+  if(ps.empty){ allList.append(el('div',{class:'small muted', text:'কোনো পোস্ট নেই'})); return; }
+  for(const d of ps.docs){
+    const p = d.data();
+    let author = null;
+    try{ const us = await getDoc(doc(db,'users', p.uid)); author = us.exists()? us.data() : null; }catch{}
+    allList.append(el('div',{class:'item'},
+      avatarOf(author?.name||'?', author?.photoURL||'','sm'),
+      el('div',{class:'col grow', style:{minWidth:0}},
+        el('div',{class:'bold truncate', text: p.caption||'(ছবি)'}),
+        el('div',{class:'small muted', text: (author?.name||'?')+' · '+fmt(p.createdAt)+' · ❤ '+(p.likes?.length||0)})
+      ),
+      p.mediaURL? el('img',{src:p.mediaURL, style:{width:'60px', height:'60px', objectFit:'cover', borderRadius:'8px'}}) : null,
+      el('button',{class:'btn btn-sm btn-danger', onclick: async()=>{
+        if(!await confirmDialog('পোস্ট ডিলিট করবেন?','মুছুন')) return;
+        await deleteDoc(doc(db,'posts', d.id)); toast('মুছে ফেলা হয়েছে','success'); adminPosts();
+      }, text:'মুছুন'})
+    ));
+  }
+}
+
+/* ===== Settings ===== */
+async function adminSettings(){
+  const main = setMain(); main.innerHTML='';
+  main.append(el('div',{class:'section-title'}, el('i',{class:'ri-settings-3-line'}), el('span',{text:'সিস্টেম সেটিংস'})));
+  const card = el('div',{class:'card'});
+  const cfg = await getDoc(doc(db,'config','app'));
+  const v = cfg.exists()? cfg.data() : { name:'Bondhu', logoEmoji:'💬' };
+  const name = el('input',{class:'input', placeholder:'অ্যাপের নাম', value: v.name||''});
+  const logo = el('input',{class:'input', placeholder:'লোগো ইমোজি (e.g. 💬, 🌟, 🎓)', value: v.logoEmoji||'💬'});
+  const save = el('button',{class:'btn btn-primary', text:'সংরক্ষণ', onclick: async()=>{
+    await setDoc(doc(db,'config','app'), { name: name.value.trim()||'Bondhu', logoEmoji: logo.value.trim()||'💬' }, { merge:true });
+    toast('সংরক্ষিত','success');
+  }});
+  card.append(
+    el('div',{class:'field'}, el('label',{text:'অ্যাপের নাম (সকল ব্যবহারকারীর কাছে real-time আপডেট হবে)'}), name),
+    el('div',{class:'field'}, el('label',{text:'লোগো ইমোজি'}), logo),
+    save
+  );
+  main.append(card);
+
+  // Danger zone
+  const danger = el('div',{class:'card', style:{borderColor:'var(--danger)'}});
+  danger.append(el('div',{class:'card-title', style:{color:'var(--danger)'}}, el('i',{class:'ri-error-warning-fill'}), el('span',{text:'বিপজ্জনক জোন'})));
+  danger.append(
+    el('div',{class:'small muted', style:{marginBottom:'8px'}, text:'এই কাজগুলো একবার করলে undo করা যাবে না।'}),
+    el('div',{class:'row gap-2', style:{flexWrap:'wrap'}},
+      el('button',{class:'btn btn-danger', onclick: async()=>{
+        if(!await confirmDialog('সব এনালাইসিস মুছে ফেলবেন? (পরে আবার চালানো যাবে)','মুছুন')) return;
+        const sn = await getDocs(collection(db,'analyses'));
+        await Promise.all(sn.docs.map(d=> deleteDoc(doc(db,'analyses', d.id))));
+        toast('সব এনালাইসিস মুছে ফেলা হয়েছে','success');
+      }, text:'সব এনালাইসিস মুছুন'}),
+      el('button',{class:'btn btn-danger', onclick: async()=>{
+        if(!await confirmDialog('সব রিপোর্ট মুছবেন?','মুছুন')) return;
+        const sn = await getDocs(collection(db,'reports'));
+        await Promise.all(sn.docs.map(d=> deleteDoc(doc(db,'reports', d.id))));
+        toast('রিপোর্ট মুছে ফেলা হয়েছে','success');
+      }, text:'সব রিপোর্ট মুছুন'}),
+      el('button',{class:'btn btn-danger', onclick: async()=>{
+        if(!await confirmDialog('ফোকাস মোড সম্পূর্ণ বন্ধ + পেন্ডিং কুইজ ফ্ল্যাগ ক্লিয়ার করব?','বন্ধ করুন')) return;
+        await setDoc(doc(db,'config','focus'),{ active:false }, { merge:true });
+        const us = await getDocs(collection(db,'users'));
+        await Promise.all(us.docs.map(d=> updateDoc(doc(db,'users', d.id),{ pendingQuiz:false, lockedUntil:null })));
+        toast('সবার ফোকাস মুক্ত','success');
+      }, text:'সবার ফোকাস মুক্ত করুন'})
+    )
+  );
+  main.append(danger);
+}
+
+/* Init */
+if(!location.hash) location.hash = '#overview';
+window.addEventListener('error',(e)=>console.error(e.error||e.message));
+</script>
+
+<noscript>
+<div style="padding:24px; text-align:center; font-family: sans-serif;">
+  This admin requires JavaScript. JavaScript চালু করুন।
+</div>
+</noscript>
+</body>
+</html>
